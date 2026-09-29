@@ -9,7 +9,7 @@ Livestock owners, vets and officials lack a unified, real-time system to detect 
 
 1. If Python is installed on computer, download and launch the PashuRakshak.py file.
 
-2. If Python is not installed on computer, download and launch pashurakshak_ai_mobile_app.html file
+2. If Python is not installed on computer, download and launch pashurakshak_ai_web_app.html or pashurakshak_ai_mobile_app.html file.
 
 
 Both of these files are designed to run offline and in any web browser.
