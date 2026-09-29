@@ -1,0 +1,2474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PashuRakshak AI - Mobile Platform</title>
+  <style>
+    :root {
+      --app-bg: #f2f5f3;
+      --phone-case: #111815;
+      --card-bg: #ffffff;
+      --ink: #0f2319;
+      --mut: #5e7368;
+      --border: #dbe4df;
+      --pri: #165b3d;
+      --pri-light: #e7f5ee;
+      --pri-active: #0f422b;
+      --accent: #22c55e;
+      --danger: #d93829;
+      --danger-bg: #fdf2f1;
+      --danger-border: #f8cac5;
+      --warn: #c97d06;
+      --warn-bg: #fef8ec;
+      --warn-border: #fbe3b7;
+      --safe: #20834e;
+      --safe-bg: #ebf7f0;
+      --safe-border: #bce3cd;
+      --shadow-sm: 0 2px 6px rgba(16, 44, 31, 0.05);
+      --shadow-md: 0 8px 24px rgba(16, 44, 31, 0.08);
+      --radius: 14px;
+      --font-body: 'Mukta', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-ui: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    [data-theme="dark"] {
+      --app-bg: #111a15;
+      --card-bg: #1a2720;
+      --ink: #ebf3ee;
+      --mut: #8da498;
+      --border: #293d33;
+      --pri: #2ea870;
+      --pri-light: #163627;
+      --pri-active: #39be80;
+      --danger-bg: #301715;
+      --danger-border: #522521;
+      --warn-bg: #312513;
+      --warn-border: #594019;
+      --safe-bg: #153222;
+      --safe-border: #245437;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Force Body to Center the Phone Shell on Desktop */
+    body {
+      background: #e2e8e4;
+      color: var(--ink);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    /* Phone Shell Simulator */
+    .phone-container {
+      width: 100%;
+      max-width: 412px;
+      height: 848px;
+      max-height: 94vh;
+      background: var(--phone-case);
+      border-radius: 46px;
+      padding: 12px;
+      box-shadow: 0 25px 60px -12px rgba(15, 35, 25, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 0;
+        background: var(--app-bg);
+      }
+      .phone-container {
+        max-width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        padding: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* Inner Screen Wrapper */
+    .phone-screen {
+      flex: 1;
+      background: var(--app-bg);
+      border-radius: 36px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    @media (max-width: 480px) {
+      .phone-screen {
+        border-radius: 0;
+      }
+    }
+
+    .status-bar {
+      height: 38px;
+      padding: 6px 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      z-index: 40;
+      background: var(--app-bg);
+    }
+
+    .island-pill {
+      width: 90px;
+      height: 18px;
+      background: #000;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .camera-lens {
+      width: 7px;
+      height: 7px;
+      background: #112836;
+      border-radius: 50%;
+    }
+
+    /* App Header */
+    .app-header {
+      background: var(--pri);
+      color: #fff;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 20;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      font-weight: 500;
+      opacity: 0.85;
+      display: block;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lang-select-hdr {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 18px;
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .lang-select-hdr option {
+      color: #111;
+      background: #fff;
+    }
+
+    .user-pill-hdr {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 3px 8px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .scroll-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px 80px;
+      scroll-behavior: smooth;
+    }
+
+    .scroll-content::-webkit-scrollbar {
+      width: 4px;
+    }
+    .scroll-content::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.12);
+      border-radius: 4px;
+    }
+
+    .status-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      padding: 6px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--mut);
+      margin-bottom: 12px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .dot-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--safe);
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+    }
+    .dot-pulse.offline {
+      background: var(--warn);
+      box-shadow: 0 0 0 2px rgba(201, 125, 6, 0.2);
+    }
+
+    .btn-toggle-sync {
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--mut);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--card-bg);
+      color: var(--ink);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--pri);
+    }
+
+    .chip-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .chip-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--card-bg);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .chip-item input[type="checkbox"] {
+      accent-color: var(--pri);
+      width: 16px;
+      height: 16px;
+    }
+    .chip-item.active {
+      border-color: var(--pri);
+      background: var(--pri-light);
+      color: var(--pri-active);
+    }
+
+    .btn-main {
+      width: 100%;
+      background: var(--pri);
+      color: #fff;
+      border: none;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(22, 91, 61, 0.25);
+      transition: transform 0.1s, background-color 0.15s;
+    }
+    .btn-main:active {
+      transform: scale(0.98);
+      background: var(--pri-active);
+    }
+
+    .btn-sec {
+      background: var(--pri-light);
+      color: var(--pri);
+      border: 1.5px solid var(--pri);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-sec:hover {
+      background: #d8ecdf;
+    }
+
+    /* Result Banners */
+    .result-banner {
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 12px;
+      animation: fadeIn 0.2s ease-in;
+    }
+    .result-banner.high {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: #8c1e13;
+    }
+    .result-banner.med {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: #7b4b02;
+    }
+    .result-banner.low {
+      background: var(--safe-bg);
+      border: 1px solid var(--safe-border);
+      color: #125732;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-high { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border); }
+    .badge-med { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-border); }
+    .badge-low { background: var(--safe-bg); color: var(--safe); border: 1px solid var(--safe-border); }
+
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 66px;
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 4px 6px;
+      z-index: 30;
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.04);
+    }
+
+    .nav-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: var(--mut);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      height: 100%;
+      transition: color 0.15s;
+    }
+
+    .nav-btn.active {
+      color: var(--pri);
+      font-weight: 800;
+    }
+
+    .nav-icon {
+      font-size: 19px;
+      line-height: 1;
+      display: block;
+    }
+
+    .nav-dot {
+      position: absolute;
+      top: 6px;
+      right: 25%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--danger);
+    }
+
+    .home-indicator {
+      width: 120px;
+      height: 4px;
+      background: #32433b;
+      border-radius: 4px;
+      margin: 6px auto 0;
+    }
+
+    @media (max-width: 480px) {
+      .home-indicator {
+        display: none;
+      }
+    }
+
+    [data-theme="dark"] [style*="background:#fff"],
+    [data-theme="dark"] [style*="background: #fff"],
+    [data-theme="dark"] [style*="background:#ffffff"],
+    [data-theme="dark"] [style*="background:#fafdfb"],
+    [data-theme="dark"] [style*="background:#f9fbfa"],
+    [data-theme="dark"] [style*="background:#f7faf8"],
+    [data-theme="dark"] [style*="background:#f4f9f6"] {
+      background: var(--card-bg) !important;
+    }
+
+    [data-theme="dark"] [style*="background:#e7eeea"],
+    [data-theme="dark"] [style*="background:#e4ede7"] {
+      background: var(--pri-light) !important;
+    }
+
+    [data-theme="dark"] [style*="color:#6a150e"],
+    [data-theme="dark"] [style*="color:#8c1e13"],
+    [data-theme="dark"] [style*="color:#a23226"],
+    [data-theme="dark"] [style*="color:#5a1711"] {
+      color: #ffaaa1 !important;
+    }
+
+    [data-theme="dark"] [style*="color:#7b4b02"],
+    [data-theme="dark"] [style*="color:#8f5906"],
+    [data-theme="dark"] [style*="color:#5b3702"] {
+      color: #f5c66f !important;
+    }
+
+    [data-theme="dark"] .modal-sheet {
+      background: var(--card-bg);
+    }
+
+    /* Modal Sheet */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 50;
+      display: flex;
+      align-items: flex-end;
+      animation: fadeIn 0.15s ease-out;
+    }
+    .modal-sheet {
+      width: 100%;
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      padding: 16px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.15);
+      animation: slideUp 0.2s ease-out;
+    }
+
+    /* Toast Notification */
+    .toast-box {
+      position: absolute;
+      top: 50px;
+      left: 14px;
+      right: 14px;
+      background: #11231a;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: slideDown 0.25s ease-out;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body>
+
+<div class="phone-container">
+  <div class="phone-screen">
+    
+    <!-- Phone Top Status Bar -->
+    <div class="status-bar">
+      <span id="live-clock">09:41</span>
+      <div class="island-pill">
+        <div class="camera-lens"></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:5px; font-size:11px;">
+        <span>5G</span>
+        <span>⚡ 94%</span>
+      </div>
+    </div>
+
+    <!-- App Top Bar -->
+    <header class="app-header">
+      <div>
+        <div class="brand-title">
+          <span>🛡️ PashuRakshak AI</span>
+        </div>
+        <small class="brand-sub" id="hdr-sub">National Livestock Disease Watch</small>
+      </div>
+
+      <div class="header-actions">
+        <select class="lang-select-hdr" id="lang-dropdown" onchange="setLang(this.value)" aria-label="App Language">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="mr">मराठी</option>
+        </select>
+        <div id="user-badge-container"></div>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Body Area -->
+    <main class="scroll-content" id="app-body">
+      <!-- Dynamic Screen Content Injected Here -->
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav" id="bottom-nav-bar">
+      <!-- Dynamic Tabs Injected Here -->
+    </nav>
+
+    <!-- Toast Notification Anchor -->
+    <div id="toast-anchor"></div>
+  </div>
+  <div class="home-indicator"></div>
+</div>
+
+<script>
+const I = {
+  en: {
+    tag: "National Early Outbreak Warning System",
+    login_title: "Sign in to PashuRakshak",
+    login_sub: "Digital animal health monitoring & rapid response",
+    farmer_tab: "👨‍🌾 Farmer Login",
+    vet_tab: "🩺 Veterinarian Login",
+    kisan_id: "Mobile No. / Kisan ID",
+    kisan_pin: "4-Digit Security PIN / OTP",
+    vci_num: "VCI Registration No.",
+    vet_pin: "Clinical Passcode",
+    btn_login: "Access Account",
+    demo_btn: "Auto-fill Demo Credentials",
+    tab_alerts: "Alerts",
+    alerts_title: "Disease Alerts & Notices",
+    alerts_sub: "Active veterinary advisories & local outbreak threats",
+    rep: "Report Symptoms",
+    rep_sub: "AI Clinical Risk Engine",
+    sp: "Animal Type",
+    cow: "Cow",
+    buf: "Buffalo",
+    goat: "Goat",
+    poul: "Poultry",
+    dist: "District",
+    vill: "Village / Taluka",
+    sym: "Symptoms Observed",
+    aff: "Affected Animals",
+    dead: "Dead Animals",
+    vacc: "Vaccinated in last 6 months",
+    go: "Calculate Disease Risk",
+    risk: "Evaluated Risk",
+    low: "Low Risk",
+    med: "Moderate Threat",
+    high: "Critical Alert",
+    dis: "Suspected Disease",
+    adv_low: "Monitor daily. Isolate symptomatic cattle. Provide fresh water and mineral mix.",
+    adv_med: "Quarantine sick stock immediately. Veterinarian notified for inspection within 24 hours.",
+    adv_high: "Urgent: Halt livestock movement. Do not sell unpasteurized milk. Rapid squad dispatched.",
+    mine: "My Recent Reports",
+    none: "No active cases reported.",
+    herd_title: "Herd Health & Census",
+    herd_sub: "Collective vaccination & parasite protection",
+    btn_view_animals: "View Individual Animal Records",
+    animal_records_title: "Individual Animal Dossiers",
+    back_to_herd: "← Back to Herd Overview",
+    tab_report: "Report",
+    tab_medication: "Medication",
+    tab_herd: "Herd Health",
+    tab_cases: "Cases",
+    tab_lab: "Lab & Tests",
+    tab_stats: "Statistics",
+    tab_settings: "Settings",
+    fmd: "Foot & Mouth (FMD)",
+    lsd: "Lumpy Skin (LSD)",
+    ant: "Anthrax / HS",
+    resp: "Bovine Respiratory",
+    bru: "Brucellosis",
+    unk: "Indeterminate",
+    fever: "Fever / Pyrexia",
+    mouth: "Mouth Sores / Froth",
+    lame: "Lameness / Limping",
+    milk: "Sudden Milk Drop",
+    nasal: "Nasal Discharge",
+    cough: "Persistent Cough",
+    diar: "Watery Diarrhoea",
+    nodules: "Skin Nodules / Lumps",
+    death: "Sudden Mortality",
+    abort: "Late-term Abortion",
+    online: "Online: Synced to Cloud",
+    offline: "Offline Mode (Local Cache)",
+    tot_cases: "Total Outbreaks",
+    crit_cases: "High Risk",
+    clusters: "Active Clusters",
+    predictions_btn: "🤖 Predictions",
+    geo_btn: "🗺️ India Geospatial Map",
+    trends_btn: "📈 Historical Disease Trends",
+    logout: "Log Out",
+    settings_title: "Settings & Preferences",
+    theme_title: "Display Theme",
+    theme_light: "Light",
+    theme_dark: "Dark",
+    theme_system: "System"
+  },
+  hi: {
+    tag: "राष्ट्रीय पशु रोग पूर्व चेतावनी तंत्र",
+    login_title: "पशुरक्षक में लॉगिन करें",
+    login_sub: "डिजिटल पशु स्वास्थ्य निगरानी और त्वरित समाधान",
+    farmer_tab: "👨‍🌾 किसान लॉगिन",
+    vet_tab: "🩺 पशु चिकित्सक लॉगिन",
+    kisan_id: "मोबाइल नंबर / किसान आईडी",
+    kisan_pin: "4-अंकों का सुरक्षा पिन / OTP",
+    vci_num: "VCI रजिस्ट्रेशन नंबर",
+    vet_pin: "चिकित्सक पासवर्ड",
+    btn_login: "खाते में प्रवेश करें",
+    demo_btn: "डेमो विवरण भरें",
+    tab_alerts: "अलर्ट",
+    alerts_title: "रोग चेतावनी व सूचनाएं",
+    alerts_sub: "सक्रिय पशु चिकित्सा परामर्श और स्थानीय प्रकोप चेतावनी",
+    rep: "लक्षण दर्ज करें",
+    rep_sub: "AI पशु स्वास्थ्य जाँच प्रणाली",
+    sp: "पशु का प्रकार",
+    cow: "गाय",
+    buf: "भैंस",
+    goat: "बकरी",
+    poul: "मुर्गी",
+    dist: "ज़िला",
+    vill: "गाँव / तहसील",
+    sym: "दिखे लक्षण",
+    aff: "प्रभावित पशु",
+    dead: "मृत पशु",
+    vacc: "पिछले 6 माह में टीका लगा",
+    go: "बीमारी जोखिम जाँचें",
+    risk: "जोखिम स्तर",
+    low: "सामान्य जोखिम",
+    med: "मध्यम खतरा",
+    high: "गंभीर चेतावनी",
+    dis: "संभावित रोग",
+    adv_low: "देखरेख रखें। बीमार पशु को अलग बाँधें। स्वच्छ पानी और चारा दें।",
+    adv_med: "पशु को तुरंत क्वारंटीन करें। पशु चिकित्सक को 24 घंटे में जाँच हेतु सूचित कर दिया गया है।",
+    adv_high: "अत्यंत आवश्यक: पशुओं की आवाजाही रोकें। दूध बिक्री न करें। त्वरित दल भेजा जा रहा है।",
+    mine: "मेरे द्वारा दर्ज मामले",
+    none: "कोई मामला दर्ज नहीं।",
+    herd_title: "झुंड व गोठा स्वास्थ्य",
+    herd_sub: "सामूहिक टीकाकरण और कृमिनाशक नियंत्रण",
+    btn_view_animals: "व्यक्तिगत पशु रिकॉर्ड देखें",
+    animal_records_title: "व्यक्तिगत पशु स्वास्थ्य कार्ड",
+    back_to_herd: "← वापस झुंड विवरण पर जाएँ",
+    tab_report: "रिपोर्ट",
+    tab_medication: "दवाइयाँ",
+    tab_herd: "झुंड स्वास्थ्य",
+    tab_cases: "मामले",
+    tab_lab: "प्रयोगशाला",
+    tab_stats: "सांख्यिकी",
+    tab_settings: "सेटिंग्स",
+    fmd: "खुरपका-मुँहपका (FMD)",
+    lsd: "लंपी त्वचा रोग (LSD)",
+    ant: "एंथ्रेक्स / गलघोंटू",
+    resp: "श्वसन संक्रमण",
+    bru: "ब्रुसेलोसिस",
+    unk: "अस्पष्ट स्थिति",
+    fever: "तेज़ बुखार",
+    mouth: "मुँह में छाले / झाग",
+    lame: "लंगड़ाकर चलना",
+    milk: "दूध में भारी गिरावट",
+    nasal: "नाक से गाढ़ा पानी",
+    cough: "लगातार खाँसी",
+    diar: "पतले दस्त",
+    nodules: "त्वचा पर कठोर गाँठें",
+    death: "अचानक मृत्यु",
+    abort: "गर्भपात",
+    online: "ऑनलाइन: क्लाउड से जुड़ा",
+    offline: "ऑफ़लाइन मोड (स्थानीय मेमोरी)",
+    tot_cases: "कुल मामले",
+    crit_cases: "उच्च जोखिम",
+    clusters: "सक्रिय हॉटस्पॉट",
+    predictions_btn: "🤖 पूर्वानुमान (AI)",
+    geo_btn: "🗺️ भारत रोग नक्शा",
+    trends_btn: "📈 ऐतिहासिक रोग रुझान",
+    logout: "लॉग आउट",
+    settings_title: "सेटिंग्स और प्राथमिकताएं",
+    theme_title: "थीम और रंग रूप",
+    theme_light: "लाइट",
+    theme_dark: "डार्क",
+    theme_system: "सिस्टम"
+  },
+  mr: {
+    tag: "राष्ट्रीय पशुरोग पूर्वसूचना व नियंत्रण प्रणाली",
+    login_title: "पशुरक्षक मध्ये प्रवेश करा",
+    login_sub: "डिजिटल पशुआरोग्य देखरेख व तत्काळ प्रतिसाद",
+    farmer_tab: "👨‍🌾 शेतकरी लॉगिन",
+    vet_tab: "🩺 पशुवैद्यकीय अधिकारी",
+    kisan_id: "मोबाईल नंबर / शेतकरी आयडी",
+    kisan_pin: "४-अंकी सुरक्षा पिन / OTP",
+    vci_num: "VCI नोंदणी क्रमांक",
+    vet_pin: "वैद्यकीय पासवर्ड",
+    btn_login: "लॉगिन करा",
+    demo_btn: "डेमो माहिती भरा",
+    tab_alerts: "अलर्ट",
+    alerts_title: "रोग इशारे व सूचना",
+    alerts_sub: "सक्रिय पशुवैद्यकीय सल्ला आणि स्थानिक प्रादुर्भाव इशारे",
+    rep: "लक्षणे नोंदवा",
+    rep_sub: "AI रोग निदान चाचणी",
+    sp: "जनावराचा प्रकार",
+    cow: "गाय",
+    buf: "म्हैस",
+    goat: "शेळी",
+    poul: "कोंबडी",
+    dist: "जिल्हा",
+    vill: "गाव / तालुका",
+    sym: "दिसलेली लक्षणे",
+    aff: "बाधित जनावरे",
+    dead: "मृत जनावरे",
+    vacc: "गेल्या ६ महिन्यांत लस टोचली",
+    go: "धोका पातळी तपासा",
+    risk: "धोका पातळी",
+    low: "कमी धोका",
+    med: "मध्यम धोका",
+    high: "गंभीर इशारा",
+    dis: "संशयित आजार",
+    adv_low: "लक्ष ठेवा. बाधित जनावर वेगळे ठेवा. स्वच्छ चारा व पाणी द्या.",
+    adv_med: "आजारी जनावर तत्काळ विलग करा. पशुवैद्यांना २४ तासांत भेटीसाठी कळवले आहे.",
+    adv_high: "तातडीची कृती: जनावरांची वाहतूक थांबवा. दूध विकू नका. शीघ्र प्रतिसाद पथक रवाना.",
+    mine: "माझे नोंदवलेले अहवाल",
+    none: "कोणताही अहवाल उपलब्ध नाही.",
+    herd_title: "कळप / गोठा आरोग्य",
+    herd_sub: "एकत्रित लसीकरण व जंतनिर्मूलन स्थिती",
+    btn_view_animals: "वैयक्तिक जनावर नोंदी पहा",
+    animal_records_title: "वैयक्तिक जनावर आरोग्य पत्रिका",
+    back_to_herd: "← परत कळप माहितीवर जा",
+    tab_report: "रिपोर्ट",
+    tab_medication: "औषधोपचार",
+    tab_herd: "कळप आरोग्य",
+    tab_cases: "रुग्ण केसेस",
+    tab_lab: "प्रयोगशाळा",
+    tab_stats: "आकडेवारी",
+    tab_settings: "सेटिंग्ज",
+    fmd: "लाळ्या खुरकूत (FMD)",
+    lsd: "लम्पी त्वचा रोग (LSD)",
+    ant: "अँथ्रॅक्स / घटसर्प",
+    resp: "श्वसन संसर्ग",
+    bru: "ब्रुसेलोसिस",
+    unk: "अस्पष्ट लक्षणे",
+    fever: "तीव्र ताप",
+    mouth: "तोंडात फोड / लाळ गळणे",
+    lame: "लंगडणे",
+    milk: "दूध उत्पादनात घट",
+    nasal: "नाकातून स्राव",
+    cough: "खोकला",
+    diar: "पातळ जुलाब",
+    nodules: "त्वचेवर गाठी",
+    death: "अचानक मृत्यू",
+    abort: "गर्भपात",
+    online: "ऑनलाइन: क्लाउड सिंक",
+    offline: "ऑफलाइन मोड (मेमरी सेव्ह)",
+    tot_cases: "एकूण केसेस",
+    crit_cases: "अति धोका",
+    clusters: "सक्रिय प्रादुर्भाव",
+    predictions_btn: "🤖 अंदाज व निदान (AI)",
+    geo_btn: "🗺️ भारत रोग नकाशा",
+    trends_btn: "📈 ऐतिहासिक रोग कल",
+    logout: "बाहेर पडा",
+    settings_title: "सेटिंग्ज आणि पर्याय",
+    theme_title: "थीम व रंगसंगती",
+    theme_light: "लाइट",
+    theme_dark: "डार्क",
+    theme_system: "सिस्टम"
+  }
+};
+
+const SYMPTOMS = ["fever", "mouth", "lame", "milk", "nasal", "cough", "diar", "nodules", "death", "abort"];
+const WEIGHTS = { fever: 2, mouth: 3, lame: 2, milk: 1, nasal: 2, cough: 1, diar: 1, nodules: 3, death: 4, abort: 2 };
+const DISTRICTS = ["Satara", "Pune", "Nashik", "Kolhapur", "Solapur", "Ahmednagar", "Nagpur"];
+
+// Application State
+let lang = "en";
+let currentTheme = "light";
+let isOnline = true;
+let currentUser = null; // { role: 'farmer'|'vet', name: string, id: string }
+let activeTab = "report"; // farmer: 'report', 'herd', 'animals', 'stats', 'settings' | vet: 'cases', 'lab', 'stats', 'settings'
+let loginRole = "farmer";
+let lastReportResult = null;
+let statsSubView = "overview"; // 'overview', 'predictions', 'trends', 'geo'
+let triageEngineMode = "hybrid"; // 'hybrid', 'rules', 'ai'
+let filterAnimalSpecies = "all";
+let searchAnimalQuery = "";
+let selectedMedAnimal = "overview"; // 'overview' or animal id (e.g., 'TAG-MH-821')
+
+let medicationsDB = [
+  {
+    id: "m1",
+    animalId: "TAG-MH-821",
+    animalName: "Lakshmi",
+    species: "Cow",
+    drug: "Meloxicam Bolus (100mg)",
+    type: "Anti-inflammatory & Fever",
+    dosage: "1 Bolus twice daily",
+    timing: "Morning & Night (After feed)",
+    duration: "3 days (Day 2 of 3)",
+    status: "due",
+    vet: "Dr. Anjali Deshmukh",
+    notes: "Crush and mix with jaggery/fodder"
+  },
+  {
+    id: "m2",
+    animalId: "TAG-MH-821",
+    animalName: "Lakshmi",
+    species: "Cow",
+    drug: "Potassium Permanganate 0.01% Mouth Wash",
+    type: "Antiseptic Wash",
+    dosage: "Wash oral lesions 2x daily",
+    timing: "Morning & Evening",
+    duration: "5 days (Day 3 of 5)",
+    status: "given",
+    vet: "Dr. Anjali Deshmukh",
+    notes: "Dilute in clean lukewarm water"
+  },
+  {
+    id: "m3",
+    animalId: "TAG-MH-822",
+    animalName: "Ganga",
+    species: "Cow",
+    drug: "Mineral Mixture Super Gold",
+    type: "Nutritional Supplement",
+    dosage: "50g daily",
+    timing: "Morning feed",
+    duration: "Daily ongoing",
+    status: "due",
+    vet: "Mobile Vet Clinic",
+    notes: "Promotes recovery and milk yield"
+  },
+  {
+    id: "m4",
+    animalId: "TAG-MH-823",
+    animalName: "Radha",
+    species: "Buffalo",
+    drug: "Enrofloxacin Injection 10%",
+    type: "Antibiotic",
+    dosage: "15 ml Intramuscular",
+    timing: "Once daily at 10:00 AM",
+    duration: "3 days (Day 1 of 3)",
+    status: "due",
+    vet: "Dr. Anjali Deshmukh",
+    notes: "Administer under vet supervision"
+  },
+  {
+    id: "m5",
+    animalId: "TAG-MH-824",
+    animalName: "Munni",
+    species: "Goat",
+    drug: "Albendazole Oral Suspension",
+    type: "Dewormer",
+    dosage: "5 ml single dose",
+    timing: "Empty stomach morning",
+    duration: "Single dose (Completed)",
+    status: "given",
+    vet: "Taluka Dispensary",
+    notes: "Repeat booster after 21 days"
+  }
+];
+
+// Mock Database
+let casesDB = [
+  { id: 101, dist: "Satara", vill: "Wai", sp: "cow", sy: ["mouth", "lame", "fever"], dead: 0, aff: 5, vacc: false, level: "high", disease: "fmd", score: 9, status: "new", mine: false },
+  { id: 102, dist: "Satara", vill: "Karad", sp: "cow", sy: ["mouth", "lame"], dead: 0, aff: 4, vacc: false, level: "med", disease: "fmd", score: 7, status: "new", mine: false },
+  { id: 103, dist: "Satara", vill: "Koregaon", sp: "cow", sy: ["mouth", "fever", "death"], dead: 1, aff: 6, vacc: false, level: "high", disease: "fmd", score: 12, status: "treated", mine: false },
+  { id: 104, dist: "Nashik", vill: "Sinnar", sp: "cow", sy: ["nodules", "fever"], dead: 0, aff: 3, vacc: true, level: "med", disease: "lsd", score: 6, status: "sample", mine: false },
+  { id: 105, dist: "Pune", vill: "Baramati", sp: "buffalo", sy: ["nasal", "cough"], dead: 0, aff: 2, vacc: true, level: "low", disease: "resp", score: 4, status: "new", mine: false }
+];
+
+let farmerAlerts = [
+  {
+    id: 1,
+    type: "critical",
+    icon: "🚨",
+    title: { en: "FMD Outbreak Alert in Taluka", hi: "तालुका में खुरपका-मुँहपका (FMD) प्रकोप चेतावनी", mr: "तालुक्यात लाळ्या खुरकूत (FMD) प्रादुर्भाव अलर्ट" },
+    desc: {
+      en: "4 active cases confirmed within 6 km (Wai cluster). Avoid moving cattle to animal bazaars. Disinfect shed entrances with lime/sodium carbonate.",
+      hi: "6 किमी के भीतर 4 सक्रिय मामलों की पुष्टि हुई (वाई क्लस्टर)। पशु हाटों में मवेशियों को न ले जाएं। गोठों में चूने का छिड़काव करें।",
+      mr: "६ किमी अंतरावर ४ सक्रिय रुग्ण आढळले आहेत (वाई क्लस्टर). जनावरांच्या बाजारात जनावरे नेणे टाळा. गोठ्यात चुन्याची फवारणी करा."
+    },
+    date: "10 mins ago",
+    badge: "High Threat",
+    unread: true
+  },
+  {
+    id: 2,
+    type: "warning",
+    icon: "💉",
+    title: { en: "Lumpy Skin (LSD) Booster Due Soon", hi: "लंपी स्किन (LSD) बूस्टर टीका जल्द देय", mr: "लम्पी स्किन (LSD) बुस्टर डोस देय" },
+    desc: {
+      en: "Booster vaccination for 'Lakshmi' (TAG-MH-821) is due this month. Government mobile vaccination van arrives on Thursday.",
+      hi: "'लक्ष्मी' (TAG-MH-821) का बूस्टर टीकाकरण इसी माह होना है। सरकारी मोबाइल टीकाकरण वैन गुरुवार को आएगी।",
+      mr: "'लक्ष्मी' (TAG-MH-821) साठी बुस्टर लसीकरण या महिन्यात बाकी आहे. शासकीय फिरते पशुवैद्यकीय पथक गुरुवारी येणार आहे."
+    },
+    date: "Yesterday",
+    badge: "Vaccine Reminder",
+    unread: true
+  },
+  {
+    id: 3,
+    type: "info",
+    icon: "🌧️",
+    title: { en: "Weather & Disease Precaution", hi: "मौसम व रोग संबंधी सावधानी", mr: "हवामान व रोग प्रतिबंधक सूचना" },
+    desc: {
+      en: "Humid monsoon weather elevates risk of Black Quarter and tick-borne fever. Ensure cattle shelter floor remains dry.",
+      hi: "आर्द्र मौसम के कारण गलघोंटू तथा चिचड़ी जनित बुखार का खतरा बढ़ जाता है। गोठे का फर्श सूखा रखें।",
+      mr: "दमट हवामानामुळे घटसर्प व गोचीड तापाचा धोका संभवतो. गोठ्यातील जमीन कोरडी राहील याची काळजी घ्या."
+    },
+    date: "2 days ago",
+    badge: "Advisory",
+    unread: false
+  }
+];
+
+let vetAlerts = [
+  {
+    id: 201,
+    type: "critical",
+    icon: "🚨",
+    title: {
+      en: "Outbreak Cluster Alert: Wai Taluka",
+      hi: "प्रकोप समूह चेतावनी: वाई तालुका",
+      mr: "प्रादुर्भाव समूह इशारा: वाई तालुका"
+    },
+    desc: {
+      en: "4 clinical FMD cases detected within 5 km radius. Automated epidemiologic threshold exceeded. Initiate ring vaccination protocol immediately.",
+      hi: "5 किमी के दायरे में 4 FMD मामले दर्ज। स्वचालित महामारी सीमा पार। तुरंत रिंग टीकाकरण प्रोटोकॉल सक्रिय करें।",
+      mr: "५ किमी परिसरात ४ लाळ्या खुरकूत रुग्ण आढळले. तात्काळ रिंग लसीकरण मोहीम सुरू करा."
+    },
+    date: "12 mins ago",
+    badge: "Hotspot Cluster",
+    unread: true,
+    actionType: "dispatch"
+  },
+  {
+    id: 202,
+    type: "critical",
+    icon: "🧪",
+    title: {
+      en: "Lab Confirmation: FMD Type-O Positive",
+      hi: "लैब रिपोर्ट: FMD टाइप-ओ पॉज़िटिव",
+      mr: "प्रयोगशाळा अहवाल: FMD टाइप-ओ पॉझिटिव्ह"
+    },
+    desc: {
+      en: "Sample #101 from Wai cluster confirmed positive via RT-PCR (Disease Diagnostic Lab, Pune). Strain: O-Ind-2001.",
+      hi: "पुणे रोग निदान प्रयोगशाला से RT-PCR द्वारा नमूना #101 FMD टाइप-ओ पॉजिटिव पुष्ट।",
+      mr: "पुणे रोग निदान प्रयोगशाळेकडून RT-PCR द्वारे नमुना #101 FMD टाइप-ओ पॉझिटिव्ह निष्पन्न."
+    },
+    date: "45 mins ago",
+    badge: "PCR Confirmed",
+    unread: true,
+    actionType: "advisory"
+  },
+  {
+    id: 203,
+    type: "warning",
+    icon: "⚠️",
+    title: {
+      en: "Mortality Anomaly Alert: Koregaon",
+      hi: "असामान्य मृत्यु सूचना: कोरेगांव",
+      mr: "असामान्य मृत्यू सूचना: कोरेगाव"
+    },
+    desc: {
+      en: "Sudden cattle mortality reported with high pyrexia. Differential diagnosis includes Anthrax/HS. Strict necropsy biosecurity advised.",
+      hi: "तेज़ बुखार के साथ मवेशी की अचानक मृत्यु। एंथ्रेक्स/गलघोंटू की आशंका। शव-परीक्षण में पूर्ण जैव-सुरक्षा बरतें।",
+      mr: "तीव्र तापासह जनावराचा अचानक मृत्यू. अँथ्रॅक्स/घटसर्प संशय. शवविच्छेदनात पूर्ण जैव-सुरक्षा बाळगा."
+    },
+    date: "2 hours ago",
+    badge: "Biosecurity Notice",
+    unread: true,
+    actionType: "quarantine"
+  },
+  {
+    id: 204,
+    type: "info",
+    icon: "💉",
+    title: {
+      en: "District Vaccine Cold-Chain Reserve",
+      hi: "ज़िला वैक्सीन कोल्ड-चेन भंडार स्थिति",
+      mr: "जिल्हा लस कोल्ड-चेन साठा स्थिती"
+    },
+    desc: {
+      en: "Emergency cold-chain status normal (3.8°C). 850 FMD polyvalent doses and 420 Goat Pox doses staged for rapid squad deployment.",
+      hi: "आपातकालीन कोल्ड-चेन तापमान सामान्य (3.8°C)। 850 FMD व 420 गोट पॉक्स खुराकें त्वरित दल हेतु तैयार।",
+      mr: "आणीबाणी कोल्ड-चेन तापमान सामान्य (३.८°C). ८५० FMD व ४२० गोट पॉक्स डोस शीघ्र पथकासाठी सज्ज."
+    },
+    date: "Yesterday",
+    badge: "Supply Ready",
+    unread: false,
+    actionType: null
+  }
+];
+
+let animalsDB = [
+  { id: "TAG-MH-821", name: "Lakshmi", sp: "cow", breed: "Gir", age: "4.5 yrs", status: "Healthy", fmd: "Done (Feb)", lsd: "Due (Oct)", hs: "Done" },
+  { id: "TAG-MH-822", name: "Ganga", sp: "cow", breed: "Sahiwal", age: "3 yrs", status: "Healthy", fmd: "Done (Feb)", lsd: "Done (Apr)", hs: "Done" },
+  { id: "TAG-MH-823", name: "Radha", sp: "buffalo", breed: "Murrah", age: "5 yrs", status: "Healthy", fmd: "Done (Jan)", lsd: "Done (Apr)", hs: "Due" },
+  { id: "TAG-MH-824", name: "Munni", sp: "goat", breed: "Osmanabadi", age: "2 yrs", status: "Healthy", fmd: "Done (Jan)", lsd: "Not Applicable", hs: "Done" }
+];
+
+let sampleCollectionDB = animalsDB.map((animal, index) => ({
+  id: `sample-${animal.id}`,
+  animalId: animal.id,
+  sampleType: ["Blood", "Urine", "Skin Tissue", "Nasal Swab"][index % 4],
+  collectedAt: "2026-09-29T09:30",
+  result: "Awaiting Lab Result",
+  notes: ""
+}));
+
+// Translation Helper
+function t(k) {
+  return (I[lang] && I[lang][k]) || I.en[k] || k;
+}
+
+// Show In-App Notification Toast (Safe, no alert())
+function showToast(msg) {
+  const anchor = document.getElementById("toast-anchor");
+  anchor.innerHTML = `<div class="toast-box"><span>🔔</span><span>${msg}</span></div>`;
+  setTimeout(() => {
+    anchor.innerHTML = "";
+  }, 2800);
+}
+
+// Update clock every minute
+function updateClock() {
+  const d = new Date();
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const el = document.getElementById("live-clock");
+  if (el) el.textContent = `${h}:${m}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function assessSymptoms(data) {
+  const sy = data.sy || [];
+  let score = sy.reduce((acc, k) => acc + (WEIGHTS[k] || 1), 0);
+  score += (data.dead || 0) * 3;
+  if ((data.aff || 1) > 3) score += 2;
+  if (!data.vacc) score += 2;
+
+  const has = k => sy.includes(k);
+  let disease = "unk";
+  if (has("nodules")) disease = "lsd";
+  else if (has("mouth") && has("lame")) disease = "fmd";
+  else if (has("death") && has("fever")) disease = "ant";
+  else if (has("nasal") && has("cough")) disease = "resp";
+  else if (has("abort")) disease = "bru";
+
+  let level = "low";
+  if (score >= 8) level = "high";
+  else if (score >= 5) level = "med";
+
+  return { ...data, score, disease, level };
+}
+
+function setLang(newLang) {
+  lang = newLang;
+  document.getElementById("lang-dropdown").value = newLang;
+  renderApp();
+}
+
+function setTheme(t) {
+  currentTheme = t;
+  applyTheme();
+  renderApp();
+}
+
+function applyTheme() {
+  const isDark = currentTheme === "dark" || (currentTheme === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  if (isDark) {
+    document.documentElement.setAttribute("data-theme", "dark");
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+  }
+}
+
+function switchRoleTab(r) {
+  loginRole = r;
+  renderApp();
+}
+
+function fillDemoLogin() {
+  if (loginRole === "farmer") {
+    document.getElementById("kisan-id-input").value = "9822145091";
+    document.getElementById("kisan-pin-input").value = "4821";
+  } else {
+    document.getElementById("vci-num-input").value = "VCI-MH-2024-884";
+    document.getElementById("vet-pin-input").value = "9922";
+  }
+}
+
+function handleLoginSubmit() {
+  if (loginRole === "farmer") {
+    currentUser = { role: "farmer", name: "Ramesh Patil", id: "MH-SAT-98221" };
+    activeTab = "alerts";
+    showToast("Welcome Ramesh Patil (Farmer ID verified)");
+  } else {
+    currentUser = { role: "vet", name: "Dr. Anjali Deshmukh", id: "VCI-MH-2024-884" };
+    activeTab = "alerts";
+    showToast("Doctor Portal Active (VCI Verified)");
+  }
+  renderApp();
+}
+
+function handleLogout() {
+  currentUser = null;
+  activeTab = "report";
+  lastReportResult = null;
+  statsSubView = "overview";
+  showToast("Logged out securely.");
+  renderApp();
+}
+
+function renderLoginScreen() {
+  return `
+    <div style="text-align:center; padding:10px 0 16px;">
+      <div style="font-size:38px; margin-bottom:4px;">🛡️🐄</div>
+      <h2 style="font-size:20px; font-weight:800; color:var(--ink);">${t("login_title")}</h2>
+      <p style="font-size:13px; color:var(--mut); margin-top:2px;">${t("login_sub")}</p>
+    </div>
+
+    <!-- Role Tabs Switcher -->
+    <div style="display:flex; background:#e7eeea; padding:3px; border-radius:12px; margin-bottom:14px;">
+      <button class="btn-toggle-sync" style="flex:1; border:none; padding:8px; border-radius:9px; font-weight:700; ${loginRole === 'farmer' ? 'background:#fff; color:var(--pri); box-shadow:0 2px 4px rgba(0,0,0,0.06);' : 'color:var(--mut);'}" onclick="switchRoleTab('farmer')">
+        ${t("farmer_tab")}
+      </button>
+      <button class="btn-toggle-sync" style="flex:1; border:none; padding:8px; border-radius:9px; font-weight:700; ${loginRole === 'vet' ? 'background:#fff; color:var(--pri); box-shadow:0 2px 4px rgba(0,0,0,0.06);' : 'color:var(--mut);'}" onclick="switchRoleTab('vet')">
+        ${t("vet_tab")}
+      </button>
+    </div>
+
+    <div class="card">
+      ${loginRole === 'farmer' ? `
+        <div class="form-group">
+          <label class="form-label">📱 ${t("kisan_id")}</label>
+          <input type="text" id="kisan-id-input" class="form-input" placeholder="e.g. 9822145091" value="9822145091">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🔒 ${t("kisan_pin")}</label>
+          <input type="password" id="kisan-pin-input" class="form-input" placeholder="••••" value="4821">
+        </div>
+      ` : `
+        <div class="form-group">
+          <label class="form-label">🩺 ${t("vci_num")}</label>
+          <input type="text" id="vci-num-input" class="form-input" placeholder="e.g. VCI-MH-2024-884" value="VCI-MH-2024-884">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🔑 ${t("vet_pin")}</label>
+          <input type="password" id="vet-pin-input" class="form-input" placeholder="••••" value="9922">
+        </div>
+      `}
+
+      <button class="btn-main" style="margin-top:14px;" onclick="handleLoginSubmit()">
+        <span>${t("btn_login")}</span> ➔
+      </button>
+
+      <button class="btn-sec" style="width:100%; margin-top:8px;" onclick="fillDemoLogin()">
+        ⚡ ${t("demo_btn")}
+      </button>
+    </div>
+
+    <div style="text-align:center; padding:10px; font-size:12px; color:var(--mut);">
+      <span>Ministry of Fisheries, Animal Husbandry & Dairying</span>
+    </div>
+  `;
+}
+
+function renderFarmerReport() {
+  const result = lastReportResult;
+  const myReports = casesDB.filter(c => c.mine);
+
+  return `
+    <div class="card">
+      <div class="card-title">
+        <span>📝 ${t("rep")}</span>
+        <span style="font-size:11px; font-weight:600; color:var(--pri); background:var(--pri-light); padding:2px 6px; border-radius:6px;">AI Enabled</span>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">${t("sp")}</label>
+          <select id="form-sp" class="form-select">
+            <option value="cow">${t("cow")}</option>
+            <option value="buf">${t("buf")}</option>
+            <option value="goat">${t("goat")}</option>
+            <option value="poul">${t("poul")}</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">${t("dist")}</label>
+          <select id="form-dist" class="form-select">
+            ${DISTRICTS.map(d => `<option value="${d}">${d}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">${t("vill")}</label>
+        <input type="text" id="form-vill" class="form-input" placeholder="e.g. Koregaon / Wai" value="Wai">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">${t("sym")}</label>
+        <div class="chip-grid">
+          ${SYMPTOMS.map(s => `
+            <label class="chip-item" id="chip-box-${s}">
+              <input type="checkbox" value="${s}" onchange="toggleChipStyle('${s}', this.checked)">
+              <span>${t(s)}</span>
+            </label>
+          `).join("")}
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">${t("aff")}</label>
+          <input type="number" id="form-aff" class="form-input" min="1" value="2">
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">${t("dead")}</label>
+          <input type="number" id="form-dead" class="form-input" min="0" value="0">
+        </div>
+      </div>
+
+      <div style="margin:6px 0 10px;">
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; cursor:pointer;">
+          <input type="checkbox" id="form-vacc" style="accent-color:var(--pri); width:16px; height:16px;">
+          <span>${t("vacc")}</span>
+        </label>
+      </div>
+
+      <button class="btn-main" onclick="submitFarmerReport()">
+        <span>🔍 ${t("go")}</span>
+      </button>
+
+      ${result ? `
+        <div class="result-banner ${result.level}">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <b style="font-size:15px;">${t("risk")}: ${t(result.level)}</b>
+            <span class="badge-pill badge-${result.level}">Score: ${result.score}</span>
+          </div>
+          <div style="margin:6px 0; font-size:14px;">
+            <b>${t("dis")}:</b> ${t(result.disease)}
+          </div>
+          <div style="font-size:12px; line-height:1.4;">
+            ${t("adv_" + result.level)}
+          </div>
+        </div>
+      ` : ""}
+    </div>
+
+    <!-- My Reports Card -->
+    <div class="card">
+      <div class="card-title">
+        <span>📋 ${t("mine")}</span>
+        <span style="font-size:12px; color:var(--mut);">${myReports.length}</span>
+      </div>
+      ${myReports.length === 0 ? `
+        <p style="font-size:13px; color:var(--mut);">${t("none")}</p>
+      ` : myReports.map(c => `
+        <div style="padding:8px 0; border-top:1px solid var(--border); font-size:13px;">
+          <div style="display:flex; justify-content:space-between;">
+            <b>${c.vill}, ${c.dist} (${t(c.sp)})</b>
+            <span class="badge-pill badge-${c.level}">${t(c.level)}</span>
+          </div>
+          <div style="color:var(--mut); font-size:12px; margin-top:2px;">
+            ${t("dis")}: ${t(c.disease)} • Symptoms: ${c.sy.map(s => t(s)).join(", ")}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderFarmerMedication() {
+  const isOverview = selectedMedAnimal === "overview";
+  const displayedMeds = isOverview 
+    ? medicationsDB 
+    : medicationsDB.filter(m => m.animalId === selectedMedAnimal);
+
+  const dueCount = medicationsDB.filter(m => m.status === "due").length;
+
+  return `
+    <div class="card">
+      <div class="card-title">
+        <span>💊 Herd Medication & Daily Schedule</span>
+        ${dueCount > 0 ? `<span class="badge-pill badge-high">${dueCount} Due Today</span>` : `<span class="badge-pill badge-low">All Given</span>`}
+      </div>
+      <p style="font-size:12px; color:var(--mut); margin-bottom:12px;">
+        Prescribed veterinary drugs, dosages, timing, and administration schedules.
+      </p>
+
+      <!-- Animal Selector & Overview Buttons -->
+      <div style="font-size:12px; font-weight:700; color:var(--mut); margin-bottom:6px;">Select Animal or Summary:</div>
+      <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:12px;">
+        <!-- Overview Button -->
+        <button class="btn-toggle-sync" style="min-width:85px; padding:7px 10px; border-radius:10px; font-weight:700; font-size:12px; display:flex; align-items:center; gap:4px; ${isOverview ? 'background:var(--pri); color:#fff; border-color:var(--pri); box-shadow:var(--shadow-sm);' : 'background:#fff;'}" onclick="selectedMedAnimal = 'overview'; renderApp();">
+          <span>📋 Overview</span>
+        </button>
+
+        <!-- Individual Animal Buttons -->
+        ${animalsDB.map(a => {
+          const hasDue = medicationsDB.some(m => m.animalId === a.id && m.status === "due");
+          const isSelected = selectedMedAnimal === a.id;
+          return `
+            <button class="btn-toggle-sync" style="min-width:95px; padding:7px 10px; border-radius:10px; font-weight:700; font-size:12px; display:flex; align-items:center; gap:5px; position:relative; ${isSelected ? 'background:var(--pri); color:#fff; border-color:var(--pri); box-shadow:var(--shadow-sm);' : 'background:#fff;'}" onclick="selectedMedAnimal = '${a.id}'; renderApp();">
+              <span>${a.name}</span>
+              <small style="opacity:0.8; font-size:10px;">(${a.sp})</small>
+              ${hasDue && !isSelected ? `<span style="width:6px; height:6px; border-radius:50%; background:var(--danger); position:absolute; top:4px; right:4px;"></span>` : ''}
+            </button>
+          `;
+        }).join("")}
+      </div>
+
+      <!-- Schedule Content Header -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <span style="font-size:13px; font-weight:800; color:var(--ink);">
+          ${isOverview ? "📋 Master Schedule (All Animals)" : `Prescriptions for ${animalsDB.find(a => a.id === selectedMedAnimal)?.name || ''} (${animalsDB.find(a => a.id === selectedMedAnimal)?.id})`}
+        </span>
+        ${isOverview ? `
+          <button class="btn-sec" style="font-size:11px; padding:3px 8px;" onclick="medicationsDB.forEach(m => m.status = 'given'); showToast('All daily doses marked as completed.'); renderApp();">
+            ✓ Mark All Given
+          </button>
+        ` : ''}
+      </div>
+
+      <!-- Medication Schedule Cards -->
+      ${displayedMeds.length === 0 ? `
+        <div style="text-align:center; padding:20px; color:var(--mut); font-size:13px; background:#f9fbfa; border-radius:12px;">
+          No active medication prescribed for this animal.
+        </div>
+      ` : displayedMeds.map(m => `
+        <div style="border:1.5px solid ${m.status === 'due' ? 'var(--warn-border)' : 'var(--border)'}; background:${m.status === 'due' ? 'var(--warn-bg)' : '#fafdfb'}; border-radius:12px; padding:12px; margin-bottom:10px; box-shadow:var(--shadow-sm);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <b style="font-size:14px; color:var(--ink);">${m.drug}</b>
+              <span style="font-size:11px; color:var(--mut); display:block; margin-top:1px;">
+                ${isOverview ? `🏷️ <b>${m.animalName}</b> (${m.species}) • ` : ''}${m.type}
+              </span>
+            </div>
+            <span class="badge-pill ${m.status === 'due' ? 'badge-med' : 'badge-low'}" style="font-size:11px;">
+              ${m.status === 'due' ? '⏳ Due Today' : '✅ Given'}
+            </span>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px; font-size:12px; margin:8px 0; background:rgba(255,255,255,0.7); padding:8px; border-radius:8px; border:1px solid #e7efe9;">
+            <div><b>Dosage:</b> ${m.dosage}</div>
+            <div><b>Schedule:</b> ${m.timing}</div>
+            <div><b>Course:</b> ${m.duration}</div>
+            <div><b>Prescriber:</b> ${m.vet}</div>
+          </div>
+
+          <div style="font-size:11px; color:var(--mut); margin-bottom:8px;">
+            <b>Instructions:</b> ${m.notes}
+          </div>
+
+          <div style="display:flex; gap:6px;">
+            <button class="btn-sec" style="flex:1; padding:6px 10px; font-size:12px; ${m.status === 'given' ? 'background:var(--safe-bg); color:var(--safe); border-color:var(--safe);' : 'background:#fff;'}" onclick="toggleMedStatus('${m.id}')">
+              ${m.status === 'due' ? '✅ Mark as Given' : '↩ Undo (Mark as Due)'}
+            </button>
+            <button class="btn-sec" style="padding:6px 10px; font-size:12px;" onclick="showToast('Reminder alert set for ' + '${m.animalName}');">
+              ⏰ Set Alarm
+            </button>
+          </div>
+        </div>
+      `).join("")}
+
+      <!-- Emergency Dosage Helpline -->
+      <div style="margin-top:12px; padding:10px; background:var(--pri-light); border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="font-size:11px; color:var(--pri); font-weight:700; display:block;">Questions regarding dosage?</span>
+          <span style="font-size:13px; font-weight:800; color:var(--pri-active);">Call Doctor Directly</span>
+        </div>
+        <button class="btn-sec" style="padding:4px 8px; font-size:11px;" onclick="showToast('Calling Dr. Anjali Deshmukh...');">
+          📞 Call Vet
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleMedStatus(id) {
+  const item = medicationsDB.find(m => m.id === id);
+  if (item) {
+    item.status = item.status === "due" ? "given" : "due";
+    showToast(`${item.drug} for ${item.animalName} marked as ${item.status === 'given' ? 'Given ✅' : 'Due ⏳'}`);
+    renderApp();
+  }
+}
+
+function renderFarmerAlerts() {
+  const unreadCount = farmerAlerts.filter(a => a.unread).length;
+
+  return `
+    <div class="card">
+      <div class="card-title">
+        <span>🔔 ${t("alerts_title")}</span>
+        ${unreadCount > 0 ? `<span class="badge-pill badge-high">${unreadCount} New</span>` : `<span class="badge-pill badge-low">All Clear</span>`}
+      </div>
+      <p style="font-size:12px; color:var(--mut); margin-bottom:12px;">${t("alerts_sub")}</p>
+
+      <!-- Urgent Ring Alert Banner -->
+      <div style="background:var(--danger-bg); border:1px solid var(--danger-border); border-radius:12px; padding:12px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <b style="color:var(--danger); font-size:13px; display:flex; align-items:center; gap:5px;">
+            <span>⚠️</span> Active Containment Zone
+          </b>
+          <span style="font-size:10px; background:var(--danger); color:#fff; padding:2px 6px; border-radius:6px; font-weight:700;">Radius 5 KM</span>
+        </div>
+        <p style="font-size:12px; color:#6a150e; margin:6px 0 0; line-height:1.4;">
+          Your registered location (Wai, Satara) is within the surveillance perimeter for Foot & Mouth Disease. Strict biosecurity advised.
+        </p>
+      </div>
+
+      <!-- Action: Mark all read -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <span style="font-size:12px; font-weight:700; color:var(--mut);">Recent Dispatches</span>
+        <button class="btn-sec" style="font-size:11px; padding:3px 8px;" onclick="farmerAlerts.forEach(a => a.unread = false); renderApp();">
+          ✓ Mark all as read
+        </button>
+      </div>
+
+      <!-- Alerts List -->
+      ${farmerAlerts.map(alert => `
+        <div style="border:1px solid ${alert.unread ? 'var(--pri)' : 'var(--border)'}; background:${alert.unread ? 'var(--card-bg)' : '#fafdfb'}; border-radius:12px; padding:12px; margin-bottom:10px; box-shadow:${alert.unread ? '0 2px 8px rgba(0,0,0,0.06)' : 'none'}; position:relative;">
+          ${alert.unread ? `<span style="position:absolute; top:12px; right:12px; width:7px; height:7px; border-radius:50%; background:var(--danger);"></span>` : ''}
+          <div style="display:flex; align-items:flex-start; gap:10px;">
+            <div style="font-size:24px; line-height:1;">${alert.icon}</div>
+            <div style="flex:1; padding-right:12px;">
+              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:2px;">
+                <b style="font-size:13px; color:var(--ink);">${alert.title[lang] || alert.title.en}</b>
+                <span class="badge-pill ${alert.type === 'critical' ? 'badge-high' : alert.type === 'warning' ? 'badge-med' : 'badge-low'}" style="font-size:10px; padding:1px 6px;">
+                  ${alert.badge}
+                </span>
+              </div>
+              <p style="font-size:12px; color:var(--mut); line-height:1.4; margin:4px 0 6px;">
+                ${alert.desc[lang] || alert.desc.en}
+              </p>
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--mut); margin-top:6px;">
+                <span>🕒 ${alert.date}</span>
+                <button class="btn-sec" style="padding:2px 8px; font-size:10px;" onclick="showToast('Helpline 1962 dialed.');">
+                  📞 Call Vet Helpline
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join("")}
+
+      <!-- Emergency Quick Contact -->
+      <div style="margin-top:14px; padding:10px; background:var(--pri-light); border-radius:10px; text-align:center;">
+        <span style="font-size:12px; color:var(--pri); font-weight:700;">Need immediate veterinary help?</span>
+        <div style="font-size:14px; font-weight:800; color:var(--pri-active); margin-top:2px;">
+          Dial 1962 (Toll Free)
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleChipStyle(sym, checked) {
+  const box = document.getElementById("chip-box-" + sym);
+  if (box) {
+    if (checked) box.classList.add("active");
+    else box.classList.remove("active");
+  }
+}
+
+function submitFarmerReport() {
+  const sp = document.getElementById("form-sp").value;
+  const dist = document.getElementById("form-dist").value;
+  const vill = document.getElementById("form-vill").value || "Village";
+  const aff = parseInt(document.getElementById("form-aff").value, 10) || 1;
+  const dead = parseInt(document.getElementById("form-dead").value, 10) || 0;
+  const vacc = document.getElementById("form-vacc").checked;
+
+  const checkboxes = document.querySelectorAll(".chip-grid input:checked");
+  const sy = Array.from(checkboxes).map(cb => cb.value);
+
+  const evaluation = assessSymptoms({
+    id: Date.now(),
+    dist,
+    vill,
+    sp,
+    sy,
+    aff,
+    dead,
+    vacc,
+    status: "new",
+    mine: true
+  });
+
+  casesDB.unshift(evaluation);
+  lastReportResult = evaluation;
+  persistLocalAssessments();
+  if (window.location.protocol !== "file:") {
+    fetch('/api/assess', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(evaluation)
+    }).catch(() => {});
+  }
+  showToast("Case analyzed & saved to records");
+  renderApp();
+}
+
+function persistLocalAssessments() {
+  try {
+    localStorage.setItem("pashurakshak_assessments", JSON.stringify(casesDB));
+  } catch (error) {
+    // Private browsing modes may disable local storage.
+  }
+}
+
+function loadPersistedAssessments() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("pashurakshak_assessments") || "[]");
+    if (Array.isArray(saved)) {
+      saved.reverse().forEach(item => {
+        if (!casesDB.some(existing => existing.id === item.id)) casesDB.unshift(item);
+      });
+      renderApp();
+    }
+  } catch (error) {
+    // Private browsing modes may disable local storage.
+  }
+
+  if (window.location.protocol !== "file:") {
+    fetch('/api/assessments')
+      .then(response => response.ok ? response.json() : Promise.reject(response.status))
+      .then(({ items }) => {
+        (items || []).reverse().forEach(item => {
+          if (!casesDB.some(existing => existing.id === item.id)) casesDB.unshift(item);
+        });
+        persistLocalAssessments();
+        renderApp();
+      })
+      .catch(() => {});
+  }
+}
+
+function renderHerdHealth() {
+  return `
+    <div class="card">
+      <div class="card-title">
+        <span>👥 ${t("herd_title")}</span>
+        <span style="font-size:11px; background:var(--pri-light); color:var(--pri); font-weight:700; padding:2px 8px; border-radius:10px;">Census: 14 Head</span>
+      </div>
+      <p style="font-size:12px; color:var(--mut); margin-bottom:12px;">${t("herd_sub")}</p>
+
+      <!-- Species Breakdown -->
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:14px; text-align:center;">
+        <div style="background:#f9fbfa; border:1px solid var(--border); padding:8px; border-radius:10px;">
+          <b style="font-size:18px; color:var(--pri);">6</b>
+          <span style="font-size:11px; display:block; color:var(--mut);">Cows</span>
+        </div>
+        <div style="background:#f9fbfa; border:1px solid var(--border); padding:8px; border-radius:10px;">
+          <b style="font-size:18px; color:var(--pri);">4</b>
+          <span style="font-size:11px; display:block; color:var(--mut);">Buffaloes</span>
+        </div>
+        <div style="background:#f9fbfa; border:1px solid var(--border); padding:8px; border-radius:10px;">
+          <b style="font-size:18px; color:var(--pri);">4</b>
+          <span style="font-size:11px; display:block; color:var(--mut);">Goats</span>
+        </div>
+      </div>
+
+      <!-- Prominent Button to Individual Animals -->
+      <button class="btn-main" style="margin-bottom:16px; background:#1b6343;" onclick="activeTab = 'animals'; renderApp();">
+        <span>🏷️ ${t("btn_view_animals")}</span> ➔
+      </button>
+
+      <!-- Collective Herd Vaccines Coverage -->
+      <div style="font-size:13px; font-weight:700; margin-bottom:8px;">Herd Vaccine Immunity Status</div>
+      
+      <div style="margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+          <span>FMD Protection Rate</span>
+          <b>92% (13/14)</b>
+        </div>
+        <div style="height:6px; background:#e2e8e4; border-radius:3px; overflow:hidden;">
+          <div style="width:92%; height:100%; background:var(--safe);"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+          <span>LSD (Cattle) Coverage</span>
+          <b>80% (8/10)</b>
+        </div>
+        <div style="height:6px; background:#e2e8e4; border-radius:3px; overflow:hidden;">
+          <div style="width:80%; height:100%; background:var(--pri);"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:3px;">
+          <span>HS / Black Quarter</span>
+          <b style="color:var(--warn);">71% (10/14)</b>
+        </div>
+        <div style="height:6px; background:#e2e8e4; border-radius:3px; overflow:hidden;">
+          <div style="width:71%; height:100%; background:var(--warn);"></div>
+        </div>
+      </div>
+
+      <!-- Batch Action -->
+      <div style="display:flex; gap:8px; margin-top:14px;">
+        <button class="btn-sec" style="flex:1;" onclick="showToast('Recorded collective herd deworming.')">
+          💊 Herd Deworming
+        </button>
+        <button class="btn-sec" style="flex:1;" onclick="showToast('Government booster request submitted.')">
+          📋 Request Booster
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderIndividualAnimals() {
+  const filtered = animalsDB.filter(a => {
+    if (filterAnimalSpecies !== "all" && a.sp !== filterAnimalSpecies) return false;
+    if (searchAnimalQuery && !a.name.toLowerCase().includes(searchAnimalQuery.toLowerCase()) && !a.id.toLowerCase().includes(searchAnimalQuery.toLowerCase())) return false;
+    return true;
+  });
+
+  return `
+    <div style="margin-bottom:10px;">
+      <button class="btn-sec" style="border:none; padding:4px 8px; font-size:13px;" onclick="activeTab = 'herd'; renderApp();">
+        ${t("back_to_herd")}
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🏷️ ${t("animal_records_title")}</span>
+        <button class="btn-sec" style="font-size:11px; padding:3px 8px;" onclick="showToast('Ear-tag registration scanner opened.')">+ Register</button>
+      </div>
+
+      <div class="form-group">
+        <input type="text" class="form-input" placeholder="Search by Ear Tag or Name..." value="${searchAnimalQuery}" oninput="searchAnimalQuery = this.value; renderApp();">
+      </div>
+
+      <div style="display:flex; gap:6px; margin-bottom:12px; overflow-x:auto;">
+        ${["all", "cow", "buffalo", "goat"].map(sp => `
+          <button class="btn-toggle-sync" style="${filterAnimalSpecies === sp ? 'background:var(--pri); color:#fff; border-color:var(--pri);' : ''}" onclick="filterAnimalSpecies = '${sp}'; renderApp();">
+            ${sp.toUpperCase()}
+          </button>
+        `).join("")}
+      </div>
+
+      ${filtered.map(a => `
+        <div style="border:1px solid var(--border); border-radius:10px; padding:10px; margin-bottom:8px; background:#fafdfb;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <b style="font-size:14px; color:var(--ink);">${a.name}</b>
+              <span style="font-size:11px; color:var(--mut); margin-left:6px;">${a.id}</span>
+            </div>
+            <span class="badge-pill badge-low">${a.status}</span>
+          </div>
+          <div style="font-size:12px; color:var(--mut); margin:4px 0;">
+            ${a.breed} • ${a.age} • ${a.sp.toUpperCase()}
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:4px; font-size:11px; margin-top:6px; background:#fff; padding:6px; border-radius:8px; border:1px solid #e7efe9;">
+            <div><b>FMD:</b> ${a.fmd}</div>
+            <div><b>LSD:</b> ${a.lsd}</div>
+            <div><b>HS:</b> ${a.hs}</div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderVetAlerts() {
+  const unreadCount = vetAlerts.filter(a => a.unread).length;
+
+  return `
+    <div class="card">
+      <div class="card-title">
+        <span>🚨 Epidemiologic & Outbreak Alerts</span>
+        ${unreadCount > 0 ? `<span class="badge-pill badge-high">${unreadCount} Priority</span>` : `<span class="badge-pill badge-low">All Monitored</span>`}
+      </div>
+      <p style="font-size:12px; color:var(--mut); margin-bottom:12px;">Real-time automated disease thresholds & district outbreak flags</p>
+
+      <!-- Rapid Response Action Banner -->
+      <div style="background:var(--danger-bg); border:1px solid var(--danger-border); border-radius:12px; padding:12px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <b style="color:var(--danger); font-size:13px; display:flex; align-items:center; gap:5px;">
+            <span>🛡️</span> Rapid Response Standing Order
+          </b>
+          <span style="font-size:10px; background:var(--danger); color:#fff; padding:2px 6px; border-radius:6px; font-weight:700;">Cluster Active</span>
+        </div>
+        <p style="font-size:12px; color:#6a150e; margin:6px 0 10px; line-height:1.4;">
+          Wai containment corridor triggered. 3 mobile vaccination units on standby with 850 polyvalent vaccine doses.
+        </p>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-main" style="flex:1; padding:8px 10px; font-size:12px; background:var(--danger);" onclick="showToast('Rapid Response Squad dispatched to Wai.');">
+            🚨 Dispatch Squad
+          </button>
+          <button class="btn-sec" style="flex:1; padding:8px 10px; font-size:12px;" onclick="showToast('Broadcast advisory sent to 142 farmers in taluka.');">
+            📢 Broadcast Advisory
+          </button>
+        </div>
+      </div>
+
+      <!-- Action: Mark all read -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <span style="font-size:12px; font-weight:700; color:var(--mut);">Clinical Alert Feed</span>
+        <button class="btn-sec" style="font-size:11px; padding:3px 8px;" onclick="vetAlerts.forEach(a => a.unread = false); renderApp();">
+          ✓ Mark all read
+        </button>
+      </div>
+
+      <!-- Alerts List -->
+      ${vetAlerts.map(alert => `
+        <div style="border:1px solid ${alert.unread ? 'var(--pri)' : 'var(--border)'}; background:${alert.unread ? 'var(--card-bg)' : '#fafdfb'}; border-radius:12px; padding:12px; margin-bottom:10px; box-shadow:${alert.unread ? '0 2px 8px rgba(0,0,0,0.06)' : 'none'}; position:relative;">
+          ${alert.unread ? `<span style="position:absolute; top:12px; right:12px; width:7px; height:7px; border-radius:50%; background:var(--danger);"></span>` : ''}
+          <div style="display:flex; align-items:flex-start; gap:10px;">
+            <div style="font-size:24px; line-height:1;">${alert.icon}</div>
+            <div style="flex:1; padding-right:12px;">
+              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:2px;">
+                <b style="font-size:13px; color:var(--ink);">${alert.title[lang] || alert.title.en}</b>
+                <span class="badge-pill ${alert.type === 'critical' ? 'badge-high' : alert.type === 'warning' ? 'badge-med' : 'badge-low'}" style="font-size:10px; padding:1px 6px;">
+                  ${alert.badge}
+                </span>
+              </div>
+              <p style="font-size:12px; color:var(--mut); line-height:1.4; margin:4px 0 6px;">
+                ${alert.desc[lang] || alert.desc.en}
+              </p>
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--mut); margin-top:6px;">
+                <span>🕒 ${alert.date}</span>
+                ${alert.actionType === 'dispatch' ? `
+                  <button class="btn-sec" style="padding:2px 8px; font-size:10px;" onclick="showToast('RRT deployment confirmed.');">
+                    ⚡ Deploy Unit
+                  </button>
+                ` : alert.actionType === 'advisory' ? `
+                  <button class="btn-sec" style="padding:2px 8px; font-size:10px;" onclick="activeTab = 'lab'; renderApp();">
+                    🔬 View Lab File
+                  </button>
+                ` : `
+                  <button class="btn-sec" style="padding:2px 8px; font-size:10px;" onclick="showToast('Case flagged for supervisor audit.');">
+                    📋 Review
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderVetCases() {
+  const queue = casesDB.filter(c => c.status === "new" || c.status === "sample");
+
+  return `
+    <div class="card">
+      <div class="card-title">
+        <span>🩺 Field Triage Queue</span>
+        <span class="badge-pill badge-high">${queue.length} Pending</span>
+      </div>
+      <p style="font-size:12px; color:var(--mut); margin-bottom:10px;">Prioritized by epidemic risk severity</p>
+
+      ${queue.length === 0 ? `<p style="font-size:13px; color:var(--mut);">${t("none")}</p>` : queue.map(c => `
+        <div style="border:1px solid var(--border); border-radius:10px; padding:10px; margin-bottom:10px; background:#fff;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <b style="font-size:14px;">${c.vill}, ${c.dist}</b>
+              <span style="font-size:11px; color:var(--mut); display:block;">Species: ${t(c.sp)} • Affect: ${c.aff} • Mortality: ${c.dead}</span>
+            </div>
+            <span class="badge-pill badge-${c.level}">${t(c.level)} (${c.score})</span>
+          </div>
+
+          <div style="font-size:12px; margin:6px 0; background:var(--pri-light); padding:4px 8px; border-radius:6px;">
+            <b>Suspected:</b> ${t(c.disease)} • Symptoms: ${c.sy.map(s => t(s)).join(", ")}
+          </div>
+
+          <div style="display:flex; gap:6px; margin-top:8px;">
+            <button class="btn-sec" style="flex:1; font-size:12px;" onclick="updateCaseStatus(${c.id}, 'treated')">
+              ✅ Confirm & Treat
+            </button>
+            <button class="btn-sec" style="flex:1; font-size:12px; background:#f4f6f5;" onclick="updateCaseStatus(${c.id}, 'sample')">
+              🧪 Dispatch to Lab
+            </button>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function updateCaseStatus(id, newStatus) {
+  const item = casesDB.find(c => c.id === id);
+  if (item) {
+    item.status = newStatus;
+    showToast(`Case #${id} updated: ${newStatus}`);
+    renderApp();
+  }
+}
+
+function formatSampleDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Not recorded";
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  const time = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return `${time} • ${date.toLocaleDateString([], { weekday: "long" })} • ${day}${month}${year}`;
+}
+
+function saveSampleCollection(animalId) {
+  const animal = animalsDB.find(item => item.id === animalId);
+  const sample = sampleCollectionDB.find(item => item.animalId === animalId);
+  if (!animal || !sample) return;
+  sample.sampleType = document.getElementById(`sample-type-${animalId}`).value;
+  sample.collectedAt = document.getElementById(`sample-date-${animalId}`).value;
+  sample.notes = document.getElementById(`sample-notes-${animalId}`).value.trim();
+  sample.result = "Awaiting Lab Result";
+  showToast(`Sample collection saved for ${animal.name}.`);
+  renderApp();
+}
+
+function showSampleResult(sampleId) {
+  const sample = sampleCollectionDB.find(item => item.id === sampleId);
+  if (sample) showToast(`${sample.animalId}: ${sample.result}`);
+}
+
+function renderSampleCollection() {
+  return `
+    <div style="margin-bottom:10px;">
+      <button class="btn-sec" style="border:none; padding:4px 8px; font-size:13px;" onclick="activeTab = 'lab'; renderApp();">
+        ← Back to Lab & Tests
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>🧫 Sample Collection</span>
+        <span class="badge-pill badge-med">${sampleCollectionDB.length} Animals</span>
+      </div>
+      <p style="font-size:12px; color:var(--mut); margin-bottom:12px;">
+        Record the specimen type and exact collection time for every animal.
+      </p>
+
+      ${animalsDB.map(animal => {
+        const sample = sampleCollectionDB.find(item => item.animalId === animal.id);
+        return `
+          <div style="border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; background:var(--card-bg);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
+              <div>
+                <b style="font-size:14px;">${animal.name}</b>
+                <span style="display:block; font-size:11px; color:var(--mut);">${animal.id} • ${animal.sp.toUpperCase()}</span>
+              </div>
+              <span class="badge-pill ${sample.result === 'Awaiting Lab Result' ? 'badge-med' : 'badge-low'}">${sample.result}</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;">
+              <div class="form-group" style="margin:0;">
+                <label class="form-label">Sample Type</label>
+                <select id="sample-type-${animal.id}" class="form-select">
+                  ${["Blood", "Urine", "Skin Tissue", "Nasal Swab", "Saliva", "Fecal Sample"].map(type => `<option ${sample.sampleType === type ? 'selected' : ''}>${type}</option>`).join("")}
+                </select>
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label class="form-label">Time and Date</label>
+                <input id="sample-date-${animal.id}" class="form-input" type="datetime-local" value="${sample.collectedAt}">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin:8px 0;">
+              <label class="form-label">Collection Notes</label>
+              <input id="sample-notes-${animal.id}" class="form-input" type="text" placeholder="Optional field notes" value="${sample.notes}">
+            </div>
+
+            <div style="font-size:11px; color:var(--mut); margin-bottom:8px;">
+              Recorded: ${formatSampleDate(sample.collectedAt)}
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-main" style="flex:1; padding:8px 10px; font-size:12px;" onclick="saveSampleCollection('${animal.id}')">
+                Save Sample
+              </button>
+              <button class="btn-sec" style="padding:8px 10px; font-size:12px;" onclick="showSampleResult('${sample.id}')">
+                Results
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderVetLab() {
+  const samples = casesDB.filter(c => c.status === "sample");
+
+  return `
+    <div class="card">
+      <div class="card-title">
+        <span>🧪 Diagnostic Lab Verification</span>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span class="badge-pill badge-med">${samples.length} In-Transit</span>
+          <button class="btn-sec" style="font-size:11px; padding:4px 8px;" onclick="activeTab = 'sampleCollection'; renderApp();">
+            🧫 Sample Collection
+          </button>
+        </div>
+      </div>
+      <p style="font-size:12px; color:var(--mut); margin-bottom:10px;">ELISA / PCR Field Test Results</p>
+
+      ${samples.length === 0 ? `<p style="font-size:13px; color:var(--mut);">No pending lab specimens.</p>` : samples.map(c => `
+        <div style="border:1px solid var(--border); border-radius:10px; padding:10px; margin-bottom:8px;">
+          <b>${c.vill},${c.dist}</b>
+          <div style="font-size:12px; color:var(--mut); margin:3px 0;">Suspected: ${t(c.disease)} • Species: ${t(c.sp)}</div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn-sec" style="flex:1; background:var(--danger-bg); border-color:var(--danger); color:var(--danger);" onclick="updateCaseStatus(${c.id}, 'pos')">
+              🚨 Positive
+            </button>
+            <button class="btn-sec" style="flex:1; background:var(--safe-bg); border-color:var(--safe); color:var(--safe);" onclick="updateCaseStatus(${c.id}, 'neg')">
+              🛡️ Negative
+            </button>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderStatsScreen() {
+  const highRiskCount = casesDB.filter(c => c.level === "high").length;
+
+  return `
+    <!-- Top Sub-Navigation Switcher -->
+    <div style="display:flex; background:#e4ede7; padding:3px; border-radius:12px; margin-bottom:12px; gap:2px; overflow-x:auto;">
+      <button class="btn-toggle-sync" style="flex:1; min-width:68px; border:none; padding:7px 4px; border-radius:9px; font-weight:700; font-size:11px; ${statsSubView === 'overview' ? 'background:#fff; color:var(--pri); box-shadow:0 2px 4px rgba(0,0,0,0.06);' : 'color:var(--mut);'}" onclick="statsSubView = 'overview'; renderApp();">
+        📊 Overview
+      </button>
+      <button class="btn-toggle-sync" style="flex:1; min-width:85px; border:none; padding:7px 4px; border-radius:9px; font-weight:700; font-size:11px; ${statsSubView === 'predictions' ? 'background:#fff; color:var(--pri); box-shadow:0 2px 4px rgba(0,0,0,0.06);' : 'color:var(--mut);'}" onclick="statsSubView = 'predictions'; renderApp();">
+        ${t("predictions_btn")}
+      </button>
+      <button class="btn-toggle-sync" style="flex:1; min-width:70px; border:none; padding:7px 4px; border-radius:9px; font-weight:700; font-size:11px; ${statsSubView === 'trends' ? 'background:#fff; color:var(--pri); box-shadow:0 2px 4px rgba(0,0,0,0.06);' : 'color:var(--mut);'}" onclick="statsSubView = 'trends'; renderApp();">
+        ${t("trends_btn")}
+      </button>
+      <button class="btn-toggle-sync" style="flex:1; min-width:60px; border:none; padding:7px 4px; border-radius:9px; font-weight:700; font-size:11px; ${statsSubView === 'geo' ? 'background:#fff; color:var(--pri); box-shadow:0 2px 4px rgba(0,0,0,0.06);' : 'color:var(--mut);'}" onclick="statsSubView = 'geo'; renderApp();">
+        ${t("geo_btn")}
+      </button>
+    </div>
+
+    ${statsSubView === 'overview' ? `
+      <!-- Metric Highlights -->
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:12px; text-align:center;">
+        <div class="card" style="padding:10px; margin:0;">
+          <b style="font-size:22px; color:var(--ink);">${casesDB.length}</b>
+          <span style="font-size:11px; color:var(--mut); display:block;">${t("tot_cases")}</span>
+        </div>
+        <div class="card" style="padding:10px; margin:0;">
+          <b style="font-size:22px; color:var(--danger);">${highRiskCount}</b>
+          <span style="font-size:11px; color:var(--mut); display:block;">${t("crit_cases")}</span>
+        </div>
+        <div class="card" style="padding:10px; margin:0;">
+          <b style="font-size:22px; color:var(--warn);">2</b>
+          <span style="font-size:11px; color:var(--mut); display:block;">${t("clusters")}</span>
+        </div>
+      </div>
+
+      <!-- Outbreak Predictions Action Card -->
+      <div class="card" style="cursor:pointer; border-left:4px solid var(--danger); background:linear-gradient(135deg, var(--card-bg) 0%, var(--danger-bg) 100%);" onclick="statsSubView = 'predictions'; renderApp();">
+        <div class="card-title">
+          <span>🤖 AI & Rule-Based Outbreak Predictions</span>
+          <span class="badge-pill badge-high">2 Flagged</span>
+        </div>
+        <p style="font-size:12px; color:var(--mut); line-height:1.4;">Automated epidemiologic triage models flagging high-risk transmission clusters before exponential surge.</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+          <span style="font-size:11px; color:var(--danger); font-weight:700;">● Wai & Sinnar clusters flagged</span>
+          <span style="font-size:12px; font-weight:700; color:var(--pri);">Run Triage ➔</span>
+        </div>
+      </div>
+
+      <!-- Quick Action Cards -->
+      <div class="card" style="cursor:pointer;" onclick="statsSubView = 'trends'; renderApp();">
+        <div class="card-title">
+          <span>📈 Historical Disease Trends</span>
+          <span style="font-size:12px; color:var(--pri);">View Curves ➔</span>
+        </div>
+        <p style="font-size:12px; color:var(--mut);">Multi-year epidemiological seasonal cycles for FMD, LSD & Anthrax.</p>
+      </div>
+
+      <div class="card" style="cursor:pointer;" onclick="statsSubView = 'geo'; renderApp();">
+        <div class="card-title">
+          <span>🗺️ Geospatial Outbreak Map</span>
+          <span style="font-size:12px; color:var(--pri);">Open Map ➔</span>
+        </div>
+        <p style="font-size:12px; color:var(--mut);">Live state-level containment zones and vector trajectories across India.</p>
+      </div>
+    ` : statsSubView === 'predictions' ? `
+      <div class="card">
+        <div class="card-title">
+          <span>🤖 Outbreak Prediction & Triage Engine</span>
+          <span class="badge-pill badge-high">Live Triage</span>
+        </div>
+        <p style="font-size:12px; color:var(--mut); margin-bottom:10px;">
+          Hybrid predictive framework combining deterministic clinical thresholds and machine learning syndromic modeling.
+        </p>
+
+        <!-- Engine Mode Switcher -->
+        <div style="display:flex; background:#e7eeea; padding:2px; border-radius:8px; margin-bottom:12px; font-size:11px;">
+          <button class="btn-toggle-sync" style="flex:1; border:none; padding:5px; border-radius:6px; font-weight:700; ${triageEngineMode === 'hybrid' ? 'background:#fff; color:var(--pri);' : 'color:var(--mut);'}" onclick="triageEngineMode = 'hybrid'; renderApp();">
+            ⚡ Hybrid (AI + Rules)
+          </button>
+          <button class="btn-toggle-sync" style="flex:1; border:none; padding:5px; border-radius:6px; font-weight:700; ${triageEngineMode === 'rules' ? 'background:#fff; color:var(--pri);' : 'color:var(--mut);'}" onclick="triageEngineMode = 'rules'; renderApp();">
+            📐 Rule-Based Rules
+          </button>
+          <button class="btn-toggle-sync" style="flex:1; border:none; padding:5px; border-radius:6px; font-weight:700; ${triageEngineMode === 'ai' ? 'background:#fff; color:var(--pri);' : 'color:var(--mut);'}" onclick="triageEngineMode = 'ai'; renderApp();">
+            🧠 AI Cluster Model
+          </button>
+        </div>
+
+        <!-- Rule Indicators Bar -->
+        <div style="background:#f7faf8; border:1px solid var(--border); border-radius:10px; padding:10px; margin-bottom:12px; font-size:12px;">
+          <b style="color:var(--ink); display:block; margin-bottom:4px;">Clinical Triage Logic Rules Triggered:</b>
+          <div style="display:flex; flex-direction:column; gap:4px; font-size:11px; color:var(--mut);">
+            <div>🔴 <b>Cluster Density Rule:</b> &ge; 3 reports within 5 km radius in &le; 72h <span style="color:var(--danger); font-weight:700;">(TRIPPED: Wai)</span></div>
+            <div>🟠 <b>Mortality Anomaly Rule:</b> Sudden death with high pyrexia <span style="color:var(--warn); font-weight:700;">(ACTIVE: Koregaon)</span></div>
+            <div>🔵 <b>Vector Spread AI Factor:</b> Monsoon humidity &gt; 82% & cattle bazaar proximity <span style="color:var(--pri); font-weight:700;">(+18% Risk Weight)</span></div>
+          </div>
+        </div>
+
+        <!-- Run Triage Action -->
+        <button class="btn-main" style="padding:8px 12px; font-size:13px; margin-bottom:14px; background:#1b6343;" onclick="showToast('⚡ Live syndromic scan complete: 2 critical clusters flagged.');">
+          ⚡ Run Live Triage Analysis
+        </button>
+
+        <!-- Flagged Outbreak Predictions List -->
+        <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:8px;">Flagged Imminent Outbreaks (7–14 Day Projection)</div>
+
+        <!-- Prediction 1: Wai Cluster -->
+        <div style="border:1.5px solid var(--danger-border); background:var(--danger-bg); border-radius:12px; padding:12px; margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <b style="font-size:14px; color:#8c1e13;">📍 Wai & Karad Cluster (Satara)</b>
+              <span style="font-size:11px; color:#a23226; display:block;">Suspected: Foot & Mouth Disease (FMD)</span>
+            </div>
+            <div style="text-align:right;">
+              <span class="badge-pill badge-high" style="font-size:11px;">94% Risk Probability</span>
+              <span style="font-size:10px; color:#8c1e13; display:block; margin-top:2px;">AI Outbreak Confidence</span>
+            </div>
+          </div>
+
+          <div style="margin:8px 0; font-size:12px; color:#5a1711; line-height:1.4;">
+            <b>Triage Rationale:</b> 3 symptomatic bovine herds reported within 4.2 km. Unvaccinated status flagged in 2 herds. Case velocity accelerating (+3 cases/48h). High transmission projected through Wai livestock market.
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px; margin-bottom:8px; font-size:11px; background:rgba(255,255,255,0.7); padding:6px; border-radius:8px;">
+            <div><b>Contagion Buffer:</b> 5.0 km radius</div>
+            <div><b>Est. Cattle at Risk:</b> 1,420 head</div>
+            <div><b>Projected Peak:</b> 4-6 Days</div>
+            <div><b>Key Vector:</b> Direct Contact / Water</div>
+          </div>
+
+          <div style="display:flex; gap:6px;">
+            <button class="btn-main" style="flex:1; padding:7px 8px; font-size:11px; background:var(--danger);" onclick="showToast('5 km ring quarantine alert issued to Taluka administration.');">
+              🛡️ Enforce 5km Ring
+            </button>
+            <button class="btn-sec" style="flex:1; padding:7px 8px; font-size:11px;" onclick="showToast('850 emergency vaccine doses dispatched to Wai block.');">
+              💉 Stage Buffer Vaccines
+            </button>
+          </div>
+        </div>
+
+        <!-- Prediction 2: Sinnar Cluster -->
+        <div style="border:1.5px solid var(--warn-border); background:var(--warn-bg); border-radius:12px; padding:12px; margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <b style="font-size:14px; color:#7b4b02;">📍 Sinnar (Nashik)</b>
+              <span style="font-size:11px; color:#8f5906; display:block;">Suspected: Lumpy Skin Disease (LSD)</span>
+            </div>
+            <div style="text-align:right;">
+              <span class="badge-pill badge-med" style="font-size:11px;">72% Warning</span>
+              <span style="font-size:10px; color:#7b4b02; display:block; margin-top:2px;">Vector Probability</span>
+            </div>
+          </div>
+
+          <div style="margin:8px 0; font-size:12px; color:#5b3702; line-height:1.4;">
+            <b>Triage Rationale:</b> 2 nodal cutaneous eruption cases recorded. AI weather integration flagged 86% sustained humidity and elevated stable fly / tick density. Secondary transmission risk moderate.
+          </div>
+
+          <div style="display:flex; gap:6px;">
+            <button class="btn-sec" style="flex:1; padding:7px 8px; font-size:11px;" onclick="showToast('Vector control fogging & isolation notice transmitted.');">
+              🦟 Vector Fogging Notice
+            </button>
+            <button class="btn-sec" style="flex:1; padding:7px 8px; font-size:11px;" onclick="showToast('Goat pox homologous booster batch pre-allocated.');">
+              📋 Pre-allocate Boosters
+            </button>
+          </div>
+        </div>
+      </div>
+    ` : statsSubView === 'trends' ? `
+      <!-- Historical Trends SVG Chart -->
+      <div class="card">
+        <div class="card-title">
+          <span>📈 12-Month Outbreak Curves</span>
+          <span style="font-size:11px; color:var(--safe); font-weight:700;">-28% YoY Drop</span>
+        </div>
+
+        <svg viewBox="0 0 340 160" style="width:100%; height:auto; overflow:visible;">
+          <!-- Grid Lines -->
+          <line x1="30" y1="20" x2="330" y2="20" stroke="#e8ede9" stroke-width="1" />
+          <line x1="30" y1="60" x2="330" y2="60" stroke="#e8ede9" stroke-width="1" />
+          <line x1="30" y1="100" x2="330" y2="100" stroke="#e8ede9" stroke-width="1" />
+          <line x1="30" y1="130" x2="330" y2="130" stroke="#b2c2b9" stroke-width="1.5" />
+
+          <!-- Y Axis Labels -->
+          <text x="22" y="24" font-size="9" fill="#889c90" text-anchor="end">120</text>
+          <text x="22" y="64" font-size="9" fill="#889c90" text-anchor="end">60</text>
+          <text x="22" y="104" font-size="9" fill="#889c90" text-anchor="end">20</text>
+          <text x="22" y="133" font-size="9" fill="#889c90" text-anchor="end">0</text>
+
+          <!-- FMD Trend Curve (Red) -->
+          <path d="M 35 110 Q 80 120 120 70 T 200 45 T 280 85 T 325 95" fill="none" stroke="#d93829" stroke-width="2.5" />
+
+          <!-- LSD Trend Curve (Amber) -->
+          <path d="M 35 125 Q 90 90 140 100 T 220 30 T 290 95 T 325 115" fill="none" stroke="#c97d06" stroke-width="2.5" stroke-dasharray="4,2" />
+
+          <!-- Months Labels -->
+          <text x="35" y="146" font-size="9" fill="#667">Oct</text>
+          <text x="105" y="146" font-size="9" fill="#667">Jan</text>
+          <text x="180" y="146" font-size="9" fill="#667">Apr</text>
+          <text x="255" y="146" font-size="9" fill="#667">Jul</text>
+          <text x="320" y="146" font-size="9" fill="#667">Sep</text>
+        </svg>
+
+        <div style="display:flex; justify-content:center; gap:16px; margin-top:8px; font-size:12px; font-weight:700;">
+          <span style="color:#d93829;">— FMD Peak (Winter)</span>
+          <span style="color:#c97d06;">- - LSD Surge (Monsoon)</span>
+        </div>
+      </div>
+    ` : `
+      <!-- India Geospatial Map -->
+      <div class="card">
+        <div class="card-title">
+          <span>🗺️ India State Outbreak Dossier</span>
+          <span class="badge-pill badge-high">Live</span>
+        </div>
+
+        <div style="text-align:center; padding:10px; background:#f4f9f6; border-radius:12px; border:1px solid var(--border); margin-bottom:10px;">
+          <!-- Stylized India State Map Layout -->
+          <svg viewBox="0 0 300 320" style="width:100%; max-height:240px; margin:auto;">
+            <!-- Northern States -->
+            <path d="M 120 20 L 150 25 L 160 55 L 130 65 L 110 40 Z" fill="#cde2d6" stroke="#fff" stroke-width="1.5"><title>Jammu & Kashmir / Ladakh</title></path>
+            <path d="M 110 65 L 140 65 L 145 90 L 115 90 Z" fill="#b8d8c5" stroke="#fff" stroke-width="1.5"><title>Punjab / Haryana</title></path>
+            
+            <!-- Central / Western -->
+            <path d="M 75 90 L 120 90 L 130 140 L 70 135 Z" fill="#a4ceb5" stroke="#fff" stroke-width="1.5"><title>Rajasthan</title></path>
+            <path d="M 50 135 L 90 140 L 85 180 L 45 170 Z" fill="#fbd5d0" stroke="#fff" stroke-width="1.5"><title>Gujarat (FMD Alert)</title></path>
+            <path d="M 120 120 L 195 125 L 180 180 L 115 175 Z" fill="#90c5a5" stroke="#fff" stroke-width="1.5"><title>Madhya Pradesh</title></path>
+            <path d="M 145 75 L 210 85 L 205 130 L 140 120 Z" fill="#a4ceb5" stroke="#fff" stroke-width="1.5"><title>Uttar Pradesh</title></path>
+            
+            <!-- Maharashtra (Active Hotspot) -->
+            <path d="M 80 180 L 150 180 L 160 230 L 95 235 Z" fill="#f8b4ab" stroke="#b92d20" stroke-width="2"><title>Maharashtra (Hotspot Active)</title></path>
+            <circle cx="120" cy="205" r="5" fill="#d93829" />
+            <circle cx="120" cy="205" r="9" fill="none" stroke="#d93829" stroke-width="1.5" opacity="0.6" />
+
+            <!-- Southern States -->
+            <path d="M 95 235 L 140 230 L 145 285 L 105 285 Z" fill="#b8d8c5" stroke="#fff" stroke-width="1.5"><title>Karnataka</title></path>
+            <path d="M 140 215 L 185 220 L 175 275 L 140 270 Z" fill="#a4ceb5" stroke="#fff" stroke-width="1.5"><title>Andhra / Telangana</title></path>
+            <path d="M 115 285 L 155 285 L 145 315 L 125 315 Z" fill="#cde2d6" stroke="#fff" stroke-width="1.5"><title>Tamil Nadu</title></path>
+          </svg>
+          <div style="font-size:11px; color:var(--mut);">📍 Pulsing red node indicates active containment in Satara, MH</div>
+        </div>
+
+        <div style="font-size:13px; line-height:1.5;">
+          <b>Maharashtra State Status:</b>
+          <div style="color:var(--danger); font-weight:700;">• 12 Suspected FMD Cases (Wai & Karad cluster)</div>
+          <div style="color:var(--safe); font-weight:600;">• Ring vaccination radius: 5 km established</div>
+        </div>
+      </div>
+    `}
+  `;
+}
+
+function renderSettingsScreen() {
+  return `
+    <div class="card">
+      <div class="card-title">
+        <span>⚙️ ${t("settings_title")}</span>
+      </div>
+
+      <!-- User Profile Summary -->
+      <div style="display:flex; align-items:center; gap:10px; padding:10px; background:var(--pri-light); border-radius:12px; margin-bottom:12px;">
+        <div style="font-size:30px;">${currentUser && currentUser.role === 'vet' ? '🩺' : '👨‍🌾'}</div>
+        <div>
+          <b style="font-size:15px; color:var(--pri);">${currentUser ? currentUser.name : "Guest User"}</b>
+          <span style="display:block; font-size:12px; color:var(--mut);">${currentUser ? currentUser.id : "Not Signed In"}</span>
+        </div>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="form-group">
+        <label class="form-label">🌐 Application Language</label>
+        <select class="form-select" onchange="setLang(this.value)">
+          <option value="en" ${lang === 'en' ? 'selected' : ''}>English</option>
+          <option value="hi" ${lang === 'hi' ? 'selected' : ''}>हिन्दी (Hindi)</option>
+          <option value="mr" ${lang === 'mr' ? 'selected' : ''}>मराठी (Marathi)</option>
+        </select>
+      </div>
+
+      <!-- Theme Selector (Light, Dark, System) -->
+      <div class="form-group" style="margin-bottom:14px;">
+        <label class="form-label">🌓 ${t("theme_title")}</label>
+        <div style="display:flex; gap:6px; background:var(--pri-light); padding:4px; border-radius:10px;">
+          <button class="btn-toggle-sync" style="flex:1; padding:7px; border:none; border-radius:8px; font-weight:700; ${currentTheme === 'light' ? 'background:var(--card-bg); color:var(--pri); box-shadow:var(--shadow-sm);' : 'color:var(--mut);'}" onclick="setTheme('light')">
+            ☀️ ${t("theme_light")}
+          </button>
+          <button class="btn-toggle-sync" style="flex:1; padding:7px; border:none; border-radius:8px; font-weight:700; ${currentTheme === 'dark' ? 'background:var(--card-bg); color:var(--pri); box-shadow:var(--shadow-sm);' : 'color:var(--mut);'}" onclick="setTheme('dark')">
+            🌙 ${t("theme_dark")}
+          </button>
+          <button class="btn-toggle-sync" style="flex:1; padding:7px; border:none; border-radius:8px; font-weight:700; ${currentTheme === 'system' ? 'background:var(--card-bg); color:var(--pri); box-shadow:var(--shadow-sm);' : 'color:var(--mut);'}" onclick="setTheme('system')">
+            ⚙️ ${t("theme_system")}
+          </button>
+        </div>
+      </div>
+
+      <!-- Sync Status Simulator -->
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-top:1px solid var(--border);">
+        <div>
+          <b style="font-size:13px; display:block;">Data Sync Connection</b>
+          <span style="font-size:11px; color:var(--mut);">${isOnline ? t("online") : t("offline")}</span>
+        </div>
+        <button class="btn-sec" onclick="isOnline = !isOnline; showToast(isOnline ? 'Online mode active' : 'Offline cached mode'); renderApp();">
+          ${isOnline ? "Simulate Offline" : "Connect Online"}
+        </button>
+      </div>
+
+      <!-- Emergency Helplines -->
+      <div style="padding:10px 0; border-top:1px solid var(--border);">
+        <b style="font-size:13px; display:block; margin-bottom:6px;">Emergency Veterinary Helplines</b>
+        <div style="font-size:12px; color:var(--pri); font-weight:700;">
+          📞 1962 (Pashu Sanjeevani Ambulance)<br>
+          📞 1800-180-1551 (Kisan Call Centre)
+        </div>
+      </div>
+
+      <!-- Logout -->
+      <button class="btn-main" style="background:#8c1e13; margin-top:16px;" onclick="handleLogout()">
+        🚪 ${t("logout")}
+      </button>
+    </div>
+  `;
+}
+
+function renderApp() {
+  const body = document.getElementById("app-body");
+  const nav = document.getElementById("bottom-nav-bar");
+  const userContainer = document.getElementById("user-badge-container");
+  const hdrSub = document.getElementById("hdr-sub");
+
+  if (hdrSub) hdrSub.textContent = t("tag");
+
+  // User badge in top-bar
+  if (currentUser) {
+    userContainer.innerHTML = `
+      <div class="user-pill-hdr" onclick="activeTab = 'settings'; renderApp();" style="cursor:pointer;" title="Click for Settings">
+        <span>${currentUser.role === 'vet' ? '🩺 Vet' : '👨‍🌾 Kisan'}</span>
+      </div>
+    `;
+  } else {
+    userContainer.innerHTML = "";
+  }
+
+  // Unauthenticated screen
+  if (!currentUser) {
+    body.innerHTML = renderLoginScreen();
+    nav.innerHTML = `
+      <div style="font-size:12px; color:var(--mut); font-weight:600; text-align:center; width:100%; padding:8px 0;">
+        PashuRakshak v2.6 • National Livestock Digital Health
+      </div>
+    `;
+    return;
+  }
+
+  // Farmer Role View Switching
+  if (currentUser.role === "farmer") {
+    const unreadAlerts = farmerAlerts.filter(a => a.unread).length;
+    const dueMedsCount = medicationsDB.filter(m => m.status === "due").length;
+
+    if (activeTab === "alerts") body.innerHTML = renderFarmerAlerts();
+    else if (activeTab === "report") body.innerHTML = renderFarmerReport();
+    else if (activeTab === "medication") body.innerHTML = renderFarmerMedication();
+    else if (activeTab === "herd") body.innerHTML = renderHerdHealth();
+    else if (activeTab === "animals") body.innerHTML = renderIndividualAnimals();
+    else if (activeTab === "settings") body.innerHTML = renderSettingsScreen();
+    else {
+      activeTab = "alerts";
+      body.innerHTML = renderFarmerAlerts();
+    }
+
+    nav.innerHTML = `
+      <button class="nav-btn ${activeTab === 'alerts' ? 'active' : ''}" onclick="activeTab = 'alerts'; renderApp();">
+        <span class="nav-icon">🔔</span>
+        <span>${t("tab_alerts")}</span>
+        ${unreadAlerts > 0 ? `<span class="nav-dot" style="right:25%;"></span>` : ''}
+      </button>
+
+      <button class="nav-btn ${activeTab === 'report' ? 'active' : ''}" onclick="activeTab = 'report'; renderApp();">
+        <span class="nav-icon">📝</span>
+        <span>${t("tab_report")}</span>
+      </button>
+
+      <button class="nav-btn ${activeTab === 'medication' ? 'active' : ''}" onclick="activeTab = 'medication'; renderApp();">
+        <span class="nav-icon">💊</span>
+        <span>${t("tab_medication")}</span>
+        ${dueMedsCount > 0 ? `<span class="nav-dot" style="right:25%; background:var(--warn);"></span>` : ''}
+      </button>
+
+      <button class="nav-btn ${activeTab === 'herd' || activeTab === 'animals' ? 'active' : ''}" onclick="activeTab = 'herd'; renderApp();">
+        <span class="nav-icon">👥</span>
+        <span>${t("tab_herd")}</span>
+      </button>
+
+      <button class="nav-btn ${activeTab === 'settings' ? 'active' : ''}" onclick="activeTab = 'settings'; renderApp();">
+        <span class="nav-icon">⚙️</span>
+        <span>${t("tab_settings")}</span>
+      </button>
+    `;
+  } else {
+    // Veterinarian Role View Switching
+    const unreadVetAlerts = vetAlerts.filter(a => a.unread).length;
+
+    if (activeTab === "alerts") body.innerHTML = renderVetAlerts();
+    else if (activeTab === "cases") body.innerHTML = renderVetCases();
+    else if (activeTab === "lab") body.innerHTML = renderVetLab();
+    else if (activeTab === "sampleCollection") body.innerHTML = renderSampleCollection();
+    else if (activeTab === "stats") body.innerHTML = renderStatsScreen();
+    else if (activeTab === "settings") body.innerHTML = renderSettingsScreen();
+    else {
+      activeTab = "alerts";
+      body.innerHTML = renderVetAlerts();
+    }
+
+    nav.innerHTML = `
+      <button class="nav-btn ${activeTab === 'alerts' ? 'active' : ''}" onclick="activeTab = 'alerts'; renderApp();">
+        <span class="nav-icon">🔔</span>
+        <span>${t("tab_alerts")}</span>
+        ${unreadVetAlerts > 0 ? `<span class="nav-dot" style="right:30%;"></span>` : ''}
+      </button>
+
+      <button class="nav-btn ${activeTab === 'cases' ? 'active' : ''}" onclick="activeTab = 'cases'; renderApp();">
+        <span class="nav-icon">🩺</span>
+        <span>${t("tab_cases")}</span>
+        <span class="nav-dot"></span>
+      </button>
+
+      <button class="nav-btn ${activeTab === 'lab' || activeTab === 'sampleCollection' ? 'active' : ''}" onclick="activeTab = 'lab'; renderApp();">
+        <span class="nav-icon">🧪</span>
+        <span>${t("tab_lab")}</span>
+      </button>
+
+      <button class="nav-btn ${activeTab === 'stats' ? 'active' : ''}" onclick="activeTab = 'stats'; renderApp();">
+        <span class="nav-icon">📊</span>
+        <span>${t("tab_stats")}</span>
+      </button>
+
+      <button class="nav-btn ${activeTab === 'settings' ? 'active' : ''}" onclick="activeTab = 'settings'; renderApp();">
+        <span class="nav-icon">⚙️</span>
+        <span>${t("tab_settings")}</span>
+      </button>
+    `;
+  }
+}
+
+// Initial Mount
+renderApp();
+loadPersistedAssessments();
+</script>
+</body>
+</html>
