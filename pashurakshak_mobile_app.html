@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PashuRakshak AI - Android Version</title>
+  <style>
+    :root {
+      --shell: #18211d;
+      --shell-edge: #39463f;
+      --screen: #050706;
+      --page: #dfe8e2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      overflow: auto;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.9), transparent 42%),
+        linear-gradient(135deg, #e9f0eb 0%, var(--page) 52%, #cbd8cf 100%);
+      color: #142019;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    .android-phone {
+      position: relative;
+      width: min(430px, 92vw);
+      height: min(900px, 92vh);
+      min-height: 620px;
+      padding: 11px;
+      border: 1px solid var(--shell-edge);
+      border-radius: 38px;
+      background: linear-gradient(145deg, #26332c, var(--shell) 46%, #0c110f);
+      box-shadow: 0 32px 70px rgba(21, 42, 29, 0.3), 0 0 0 7px rgba(255, 255, 255, 0.24);
+    }
+
+    .android-phone::before,
+    .android-phone::after {
+      content: "";
+      position: absolute;
+      right: -4px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: #526057;
+    }
+
+    .android-phone::before {
+      top: 156px;
+      height: 72px;
+    }
+
+    .android-phone::after {
+      top: 242px;
+      height: 42px;
+    }
+
+    .android-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border: 2px solid #080b09;
+      border-radius: 29px;
+      background: var(--screen);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .android-camera {
+      position: absolute;
+      z-index: 2;
+      top: 13px;
+      left: 50%;
+      width: 9px;
+      height: 9px;
+      transform: translateX(-50%);
+      border: 2px solid #26332c;
+      border-radius: 50%;
+      background: #050809;
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+    }
+
+    .app-frame {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #f2f5f3;
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 0;
+        background: #f2f5f3;
+      }
+
+      .android-phone {
+        width: 100vw;
+        height: 100vh;
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .android-phone::before,
+      .android-phone::after,
+      .android-camera {
+        display: none;
+      }
+
+      .android-screen {
+        border: 0;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="android-phone" aria-label="PashuRakshak AI Android phone preview">
+    <div class="android-screen">
+      <span class="android-camera" aria-hidden="true"></span>
+      <iframe
+        class="app-frame"
+        src="pashurakshak_ai_mobile_app.html"
+        title="PashuRakshak AI mobile app">
+      </iframe>
+    </div>
+  </main>
+</body>
+</html>
